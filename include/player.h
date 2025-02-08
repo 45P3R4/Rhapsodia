@@ -3,9 +3,10 @@
 
 #include "raylib.h"
 
-typedef struct {
+typedef struct
+{
     Vector3 position;
     Vector3 size;
-}  Player;
+} Player;
 
 #endif /* PLAYER */
