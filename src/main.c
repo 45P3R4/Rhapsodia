@@ -1,13 +1,16 @@
 #include "raylib.h"
 #include "resource_dir.h" // utility header for SearchAndSetResourceDir
+#include "noise.h"
 #include "world.h"
+#include "chunk.h"
+#include "block.h"
 
 int main()
 {
 	// Tell the window to use vsync and work on high DPI displays
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
-	InitWindow(1280, 720, "Blockgame");
+	InitWindow(1280, 720, "Rhapsodia");
 
 	SearchAndSetResourceDir("resources");
 
@@ -20,14 +23,16 @@ int main()
 
 	Vector3 boxPosition = {0.0f, 0.0f, 0.0f};
 
-	int chunkCount = 1;
+	int chunkCount = 4;
 	Chunk ch[chunkCount][chunkCount];
 
 	for (int x = 0; x < chunkCount; x++)
 		for (int z = 0; z < chunkCount; z++)
 		{
 			ch[x][z].position = (Vector3i){x * CHUNK_SIZE, -14, z * CHUNK_SIZE};
-			fillChunkRandom(&(ch[x][z]));
+			fillByArray(&(ch[x][z]));
+			// fillChunkDiagonal(&(ch[x][z]));
+			// fillChunkRandom(&(ch[x][z]));
 		}
 
 	DisableCursor();
@@ -46,9 +51,7 @@ int main()
 
 		for (int x = 0; x < chunkCount; x++)
 			for (int z = 0; z < chunkCount; z++)
-			{
 				drawChunk(ch[x][z]);
-			}
 
 		EndMode3D();
 		DrawFPS(3, 3);
