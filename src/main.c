@@ -20,9 +20,15 @@ int main()
 
 	Vector3 boxPosition = {0.0f, 0.0f, 0.0f};
 
-	Chunk ch;
-	ch.position = (Vector3i){0, -14, 0};
-	fillChunkRandom(&ch);
+	int chunkCount = 1;
+	Chunk ch[chunkCount][chunkCount];
+
+	for (int x = 0; x < chunkCount; x++)
+		for (int z = 0; z < chunkCount; z++)
+		{
+			ch[x][z].position = (Vector3i){x * CHUNK_SIZE, -14, z * CHUNK_SIZE};
+			fillChunkRandom(&(ch[x][z]));
+		}
 
 	DisableCursor();
 	SetTargetFPS(144);
@@ -37,7 +43,12 @@ int main()
 		BeginMode3D(camera);
 
 		DrawGrid(10, 1.0f);
-		drawChunk(ch);
+
+		for (int x = 0; x < chunkCount; x++)
+			for (int z = 0; z < chunkCount; z++)
+			{
+				drawChunk(ch[x][z]);
+			}
 
 		EndMode3D();
 		DrawFPS(3, 3);
