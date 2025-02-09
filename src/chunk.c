@@ -1,13 +1,9 @@
 #include "chunk.h"
 #include "noise.h"
 
-int getRandomBlockType() 
-{
-    return (rand() % (TYPES_COUNT-1)) + 1;
-    
-}
+int getRandomBlockType() { return (rand() % (TYPES_COUNT-1)) + 1; }
 
-void fillByArray(Chunk* ch)
+void fillChunkSmooth(Chunk* ch)
 {
     ChunkMap noiseMap;
 
@@ -17,7 +13,7 @@ void fillByArray(Chunk* ch)
         int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
         int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
-        noiseMap.height[x][z] = abs(floor(pnoise2d(x + ch->position.x, z + ch->position.z, 4, 5, 0)/30)) + 3;
+        noiseMap.height[x][z] = floor(pnoise2d(x + ch->position.x, z + ch->position.z, 4, 5, 0)/50) + 3;
 
         if(y < noiseMap.height[x][z])
             ch->blocks[x][y][z] = getRandomBlockType();
@@ -26,26 +22,11 @@ void fillByArray(Chunk* ch)
     }
 }
 
-void fillChunkDiagonal(Chunk *ch)
+void fillChunk(Chunk *ch)
 {
     for (int i = 0; i < pow(CHUNK_SIZE, 3); i++)
     {
-        int x = i % CHUNK_SIZE;
-        int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
-        int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
-        ch->blocks[x][(x+z)/2][z] = getRandomBlockType();
-    }
-}
-
-void fillChunkRandom(Chunk *ch)
-{
-    for (int i = 0; i < pow(CHUNK_SIZE, 3); i++)
-    {
-        int x = i % CHUNK_SIZE;
-        int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
-        int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-        ch->blocks[x][y][z] = getRandomBlockType();
+        ch->blocks[i % CHUNK_SIZE][(i / CHUNK_SIZE) % CHUNK_SIZE][i / (CHUNK_SIZE * CHUNK_SIZE)] = getRandomBlockType();
     }
 }
 

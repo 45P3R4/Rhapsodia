@@ -88,6 +88,8 @@ void drawRightFace(Color color)
 
 void drawLeftFace(Color color)
 {
+    color = (Color){color.r / 2, color.g / 2, color.b / 2, color.a};
+    
     rlBegin(RL_TRIANGLES);
     rlColor4ub(color.r, color.g, color.b, color.a);
 
@@ -110,8 +112,6 @@ void DrawBlock(Vector3i position, int block, bool top, bool bottom, bool front, 
         color = BROWN;
     if (block == STONE)
         color = GRAY;
-    if (block == SAND)
-        color = GOLD;
 
     rlPushMatrix();
     rlTranslatef(position.x, position.y, position.z);

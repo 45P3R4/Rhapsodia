@@ -9,7 +9,6 @@ enum Block
     AIR,
     DIRT,
     STONE,
-    SAND,
     TYPES_COUNT
 };
 

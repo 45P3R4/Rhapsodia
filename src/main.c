@@ -30,9 +30,7 @@ int main()
 		for (int z = 0; z < chunkCount; z++)
 		{
 			ch[x][z].position = (Vector3i){x * CHUNK_SIZE, -14, z * CHUNK_SIZE};
-			fillByArray(&(ch[x][z]));
-			// fillChunkDiagonal(&(ch[x][z]));
-			// fillChunkRandom(&(ch[x][z]));
+			fillChunkSmooth(&(ch[x][z]));
 		}
 
 	DisableCursor();
@@ -49,9 +47,8 @@ int main()
 
 		DrawGrid(10, 1.0f);
 
-		for (int x = 0; x < chunkCount; x++)
-			for (int z = 0; z < chunkCount; z++)
-				drawChunk(ch[x][z]);
+		for (int i = 0; i < chunkCount * chunkCount; i++)
+			drawChunk(ch[i / chunkCount][i % chunkCount]);
 
 		EndMode3D();
 		DrawFPS(3, 3);

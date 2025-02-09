@@ -21,11 +21,9 @@ typedef struct
     int height[CHUNK_SIZE][CHUNK_SIZE];
 } ChunkMap;
 
-void fillByArray(Chunk* ch);
+void fillChunkSmooth(Chunk* ch);
 
-void fillChunkDiagonal(Chunk *ch);
-
-void fillChunkRandom(Chunk *ch);
+void fillChunk(Chunk *ch);
 
 void drawChunk(Chunk ch);
 
