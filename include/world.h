@@ -2,8 +2,12 @@
 #define WORLD
 
 #include "raylib.h"
+#include "chunk.h"
+
+#define CHUNKS_COUNT 5
 
 extern Color skyColor;
-// Chunk chunks[8];
+
+void worldInit();
 
 #endif /* WORLD */
