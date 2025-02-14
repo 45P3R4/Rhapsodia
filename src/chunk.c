@@ -35,22 +35,6 @@ void fillChunk(Chunk *ch, int blockType)
 
 Mesh genMeshChunk(Chunk ch)
 {
-    // for (int i = 0; i < pow(CHUNK_SIZE, 3); i++)
-    // {
-    //     int x = i % CHUNK_SIZE;
-    //     int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
-    //     int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
-    //     bool top    = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y+1][z] == AIR && y < CHUNK_SIZE-1);
-    //     bool bottom = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y-1][z] == AIR && y > 0);
-    //     bool front  = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y][z+1] == AIR && z < CHUNK_SIZE-1);
-    //     bool back   = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y][z-1] == AIR && z > 0);
-    //     bool right  = (ch.blocks[x][y][z] != AIR && ch.blocks[x+1][y][z] == AIR && x < CHUNK_SIZE-1);
-    //     bool left   = (ch.blocks[x][y][z] != AIR && ch.blocks[x-1][y][z] == AIR && x > 0);
-        
-    //     Vector3 blockPosition = (Vector3){(float)x + ch.position.x,  (float)y + ch.position.y, (float)z + ch.position.z};
-    // }
-
     Mesh mesh = {0};
     mesh.vboId = (unsigned int *)RL_CALLOC(MAX_MESH_VBO, sizeof(unsigned int));
 
@@ -139,7 +123,7 @@ Mesh genMeshChunk(Chunk ch)
 
     int k = 0;
 
-    for (int i = 0; i < faces * SIDE_VERTICES_COUNT+1; i += 6)
+    for (int i = 0; i < verticesCount; i += 6)
     {
         mesh.indices[i] = 4*k;
         mesh.indices[i + 1] = 4*k + 1;
