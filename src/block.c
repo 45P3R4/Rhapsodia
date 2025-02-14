@@ -1,132 +1,139 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <mem.h>
 #include "block.h"
 
-void drawFrontFace(Color color)
+const float frontNormals[] = { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 };
+const float backNormals[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+const float topNormals[] = { 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 };
+const float bottomNormals[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+const float rightNormals[] = { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 };
+const float leftNormals[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+const float frontTexcoords[] = {0, 0, 1, 0, 1, 1, 0, 1 };
+const float backTexcoords[] = {1, 0, 1, 1, 0, 1, 0, 0};
+const float topTexcoords[] = {0, 1, 0, 0, 1, 0, 1, 1};
+const float bottomTexcoords[] = {1, 1, 0, 1, 0, 0, 1, 0};
+const float rightTexcoords[] = {1, 0, 1, 1, 0, 1, 0, 0};
+const float leftTexcoords[] = {0, 0, 1, 0, 1, 1, 0, 1};
+
+void addFaceVertices(Vector3 position, int side, float* verts, float* normals, float* texturecoords, int* index)
 {
-    rlBegin(RL_TRIANGLES);
-    rlColor4ub(color.r, color.g, color.b, color.a);
+    switch (side)
+    {
+    case FRONT:
+        const float frontVertices[] = { 
+            position.x + 0, position.y + 0, position.z + 1, 
+            position.x + 1, position.y + 0, position.z + 1, 
+            position.x + 1, position.y + 1, position.z + 1, 
+            position.x + 0, position.y + 1, position.z + 1 };
+        memcpy(verts + *index*SIDE_VERTICES_COUNT, frontVertices, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(normals + *index*SIDE_VERTICES_COUNT, frontNormals, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(texturecoords + *index*8, frontTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
+        break;
+    case BACK:
+        const float backVertices[] = { 
+            position.x + 0, position.y + 0, position.z + 0, 
+            position.x + 0, position.y + 1, position.z + 0, 
+            position.x + 1, position.y + 1, position.z + 0, 
+            position.x + 1, position.y + 0, position.z + 0 };
+        memcpy(verts + *index*SIDE_VERTICES_COUNT, backVertices, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(normals + *index*SIDE_VERTICES_COUNT, backNormals, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(texturecoords + *index*8, backTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
+        break;
+    case TOP:
+        const float topVertices[] = { 
+            position.x + 0, position.y + 1, position.z + 0, 
+            position.x + 0, position.y + 1, position.z + 1, 
+            position.x + 1, position.y + 1, position.z + 1, 
+            position.x + 1, position.y + 1, position.z + 0 };
+        memcpy(verts + *index*SIDE_VERTICES_COUNT, topVertices, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(normals + *index*SIDE_VERTICES_COUNT, topNormals, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(texturecoords + *index*8, topTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
+        break;
+    case BOTTOM:
+        const float bottomVertices[] = { 
+            position.x + 0, position.y + 0, position.z + 0, 
+            position.x + 1, position.y + 0, position.z + 0, 
+            position.x + 1, position.y + 0, position.z + 1, 
+            position.x + 0, position.y + 0, position.z + 1 };
+        memcpy(verts + *index*SIDE_VERTICES_COUNT, bottomVertices, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(normals + *index*SIDE_VERTICES_COUNT, bottomNormals, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(texturecoords + *index*8, bottomTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
+        break;
+    case RIGHT:
+        const float rightVertices[] = { 
+            position.x + 1, position.y + 0, position.z + 0, 
+            position.x + 1, position.y + 1, position.z + 0, 
+            position.x + 1, position.y + 1, position.z + 1, 
+            position.x + 1, position.y + 0, position.z + 1 };
+        memcpy(verts + *index*SIDE_VERTICES_COUNT, rightVertices, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(normals + *index*SIDE_VERTICES_COUNT, rightNormals, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(texturecoords + *index*8, rightTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
+        break;
+    case LEFT:
+        const float leftVertices[] = { 
+            position.x + 0, position.y + 0, position.z + 0, 
+            position.x + 0, position.y + 0, position.z + 1, 
+            position.x + 0, position.y + 1, position.z + 1, 
+            position.x + 0, position.y + 1, position.z + 0 };
+        memcpy(verts + *index*SIDE_VERTICES_COUNT, leftVertices, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(normals + *index*SIDE_VERTICES_COUNT, leftNormals, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(texturecoords + *index*8, leftTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
+        break;
 
-    rlNormal3f(0.0f, 0.0f, 1.0f);
-    rlVertex3f(0, 0, 1); // Bottom Left
-    rlVertex3f(1, 0, 1); // Bottom Right
-    rlVertex3f(0, 1, 1); // Top Left
-
-    rlVertex3f(1, 1, 1); // Top Right
-    rlVertex3f(0, 1, 1); // Top Left
-    rlVertex3f(1, 0, 1);
-    rlEnd();
+    default:
+        return;
+    } 
+    *index += 1;
 }
 
-void drawBackFace(Color color)
+Mesh genMeshBlock(Vector3 position, int block)
 {
-    color = (Color){color.r / 2, color.g / 2, color.b / 2, color.a};
+    Mesh mesh = { 0 };
+	float vertices[SIDE_VERTICES_COUNT*6];
+    float normals[SIDE_VERTICES_COUNT*6];
+    float texturecoords[SIDE_VERTICES_COUNT*6];
 
-    rlBegin(RL_TRIANGLES);
-    rlColor4ub(color.r, color.g, color.b, color.a);
+    int index = 0;
 
-    rlNormal3f(0.0f, 0.0f, -1.0f);
-    rlVertex3f(0, 0, 0); // Bottom Left
-    rlVertex3f(0, 1, 0); // Top Left
-    rlVertex3f(1, 0, 0); // Bottom Right
+    addFaceVertices(position, FRONT, vertices, normals, texturecoords, &index);
+    addFaceVertices(position, BACK, vertices, normals, texturecoords, &index);
+    addFaceVertices(position, TOP, vertices, normals, texturecoords, &index);
+    addFaceVertices(position, BOTTOM, vertices, normals, texturecoords, &index);
+    addFaceVertices(position, RIGHT, vertices, normals, texturecoords, &index);
+    addFaceVertices(position, LEFT, vertices, normals, texturecoords, &index);    
 
-    rlVertex3f(1, 1, 0); // Top Right
-    rlVertex3f(1, 0, 0); // Bottom Right
-    rlVertex3f(0, 1, 0); // Top Left
-    rlEnd();
-}
+    mesh.vertices = malloc(24*3*sizeof(float));
+    memcpy(mesh.vertices, vertices, 24*3*sizeof(float));
 
-void drawTopFace(Color color)
-{
-    rlBegin(RL_TRIANGLES);
-    rlColor4ub(color.r, color.g, color.b, color.a);
+    mesh.normals = (float *)RL_MALLOC(24*3*sizeof(float));
+    memcpy(mesh.normals, normals, 24*3*sizeof(float));
 
-    rlNormal3f(0.0f, 1.0f, 0.0f);
-    rlVertex3f(0, 1, 0); // Top Left
-    rlVertex3f(0, 1, 1); // Bottom Left
-    rlVertex3f(1, 1, 1); // Bottom Right
+    mesh.texcoords = (float *)RL_MALLOC(24*3*sizeof(float));
+    memcpy(mesh.texcoords, texturecoords, 24*3*sizeof(float));
 
-    rlVertex3f(1, 1, 0); // Top Right
-    rlVertex3f(0, 1, 0); // Top Left
-    rlVertex3f(1, 1, 1); // Bottom Right
-    rlEnd();
-}
+    mesh.indices = malloc(36*sizeof(unsigned short));
 
-void drawBottomFace(Color color)
-{
-    color = (Color){color.r / 2, color.g / 2, color.b / 2, color.a};
+    int k = 0;
 
-    rlBegin(RL_TRIANGLES);
-    rlColor4ub(color.r, color.g, color.b, color.a);
+    for (int i = 0; i < 36; i += 6)
+    {
+        mesh.indices[i] = 4*k;
+        mesh.indices[i + 1] = 4*k + 1;
+        mesh.indices[i + 2] = 4*k + 2;
+        mesh.indices[i + 3] = 4*k;
+        mesh.indices[i + 4] = 4*k + 2;
+        mesh.indices[i + 5] = 4*k + 3;
 
-    rlNormal3f(0.0f, -1.0f, 0.0f);
-    rlVertex3f(0, 0, 0); // Top Left
-    rlVertex3f(1, 0, 1); // Bottom Right
-    rlVertex3f(0, 0, 1); // Bottom Left
+        k++;
+    }
 
-    rlVertex3f(1, 0, 0); // Top Right
-    rlVertex3f(1, 0, 1); // Bottom Right
-    rlVertex3f(0, 0, 0); // Top Left
-    rlEnd();
-}
+    mesh.vertexCount = 24;
+    mesh.triangleCount = SIDE_VERTICES_COUNT;
 
-void drawRightFace(Color color)
-{
-    color = (Color){color.r / 2, color.g / 2, color.b / 2, color.a};
+    // Upload vertex data to GPU (static mesh)
+    UploadMesh(&mesh, false);
 
-    rlBegin(RL_TRIANGLES);
-    rlColor4ub(color.r, color.g, color.b, color.a);
-
-    rlNormal3f(1.0f, 0.0f, 0.0f);
-    rlVertex3f(1, 0, 0); // Bottom Right
-    rlVertex3f(1, 1, 0); // Top Right
-    rlVertex3f(1, 1, 1); // Top Left
-
-    rlVertex3f(1, 0, 1); // Bottom Left
-    rlVertex3f(1, 0, 0); // Bottom Right
-    rlVertex3f(1, 1, 1); // Top Left
-    rlEnd();
-}
-
-void drawLeftFace(Color color)
-{
-    color = (Color){color.r / 2, color.g / 2, color.b / 2, color.a};
-    
-    rlBegin(RL_TRIANGLES);
-    rlColor4ub(color.r, color.g, color.b, color.a);
-
-    rlNormal3f(-1.0f, 0.0f, 0.0f);
-    rlVertex3f(0, 0, 0); // Bottom Right
-    rlVertex3f(0, 1, 1); // Top Left
-    rlVertex3f(0, 1, 0); // Top Right
-
-    rlVertex3f(0, 0, 1); // Bottom Left
-    rlVertex3f(0, 1, 1); // Top Left
-    rlVertex3f(0, 0, 0); // Bottom Right
-    rlEnd();
-}
-
-void DrawBlock(Vector3i position, int block, bool top, bool bottom, bool front, bool back, bool left, bool right)
-{
-    Color color = PINK;
-
-    if (block == DIRT)
-        color = BROWN;
-    if (block == STONE)
-        color = GRAY;
-
-    rlPushMatrix();
-    rlTranslatef(position.x, position.y, position.z);
-    
-    if (top)
-        drawTopFace(color);
-    if (bottom)
-        drawBottomFace(color);
-    if (front)
-        drawFrontFace(color);
-    if (back)
-        drawBackFace(color);
-    if (right)
-        drawRightFace(color);
-    if (left)
-        drawLeftFace(color);
-    rlPopMatrix();
+    return mesh;
 }

@@ -2,17 +2,14 @@
 #include "resource_dir.h" // utility header for SearchAndSetResourceDir
 #include "noise.h"
 #include "world.h"
-#include "chunk.h"
-#include "block.h"
 
 int main()
 {
-	// Tell the window to use vsync and work on high DPI displays
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
 	InitWindow(1280, 720, "Rhapsodia");
 
-	SearchAndSetResourceDir("resources");
+	// SearchAndSetResourceDir("resources");
 
 	Camera3D camera = {0};
 	camera.position = (Vector3){5.0f, 1.7f, 0.0f}; // Camera position
@@ -23,19 +20,25 @@ int main()
 
 	Vector3 boxPosition = {0.0f, 0.0f, 0.0f};
 
-	int chunkCount = 4;
-	Chunk ch[chunkCount][chunkCount];
-
-	for (int x = 0; x < chunkCount; x++)
-		for (int z = 0; z < chunkCount; z++)
-		{
-			ch[x][z].position = (Vector3i){x * CHUNK_SIZE, -14, z * CHUNK_SIZE};
-			fillChunkSmooth(&(ch[x][z]));
-		}
-
 	DisableCursor();
 	SetTargetFPS(144);
 
+	worldInit();
+
+	Chunk ch;
+	ch.position = (Vector3){1,1,0};
+	fillChunkSmooth(&ch, STONE);
+	Mesh meshChunk = genMeshChunk(ch);
+	Model modelChunk = LoadModelFromMesh(meshChunk);
+
+	Material materialChunk;
+
+	modelChunk.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = LoadTexture("resources/grass.png");
+
+	// Mesh meshBlock = genMeshBlock((Vector3){0,-4,0}, DIRT);
+	// Model modelBlock = LoadModelFromMesh(meshBlock);
+
+	Vector3 position = (Vector3){0,0,0};
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
@@ -45,10 +48,14 @@ int main()
 		ClearBackground(skyColor);
 		BeginMode3D(camera);
 
-		DrawGrid(10, 1.0f);
-
-		for (int i = 0; i < chunkCount * chunkCount; i++)
-			drawChunk(ch[i / chunkCount][i % chunkCount]);
+		DrawGrid(10, 1);
+		// DrawModel(modelChunk, position, 1, WHITE);
+		// DrawModel(modelBlock, position, 1, BROWN);
+		drawChunks();
+		DrawCube((Vector3){2, 0, 0}, 2, 0.1, 0.1, RED);
+		DrawCube((Vector3){0, 2, 0}, 0.1, 2, 0.1, GREEN);
+		DrawCube((Vector3){0, 0, 2}, 0.1, 0.1, 2, BLUE);
+		// drawChunks();
 
 		EndMode3D();
 		DrawFPS(3, 3);

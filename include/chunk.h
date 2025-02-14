@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include "block.h"
+#include "noise.h"
 
 #include <stdlib.h> //rand
 #include <stdio.h>
@@ -12,19 +13,21 @@
 
 typedef struct
 {
-    Vector3i position;
+    Vector3 position;
     int blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+    Mesh mesh;
+    Model model;
 } Chunk;
 
 typedef struct
 {
     int height[CHUNK_SIZE][CHUNK_SIZE];
-} ChunkMap;
+} heightMap;
 
-void fillChunkSmooth(Chunk* ch);
+void fillChunkSmooth(Chunk* ch, int blockType);
 
-void fillChunk(Chunk *ch);
+void fillChunk(Chunk *ch, int blockType);
 
-void drawChunk(Chunk ch);
+Mesh genMeshChunk(Chunk ch);
 
 #endif /* CHUNK */
