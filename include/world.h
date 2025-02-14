@@ -4,7 +4,7 @@
 #include "raylib.h"
 #include "chunk.h"
 
-#define CHUNKS_COUNT 4
+#define CHUNKS_COUNT 1
 
 extern Color skyColor;
 

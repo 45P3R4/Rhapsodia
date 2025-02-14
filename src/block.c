@@ -3,87 +3,49 @@
 #include <mem.h>
 #include "block.h"
 
-const float frontNormals[] = { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1 };
-const float backNormals[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-const float topNormals[] = { 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0 };
-const float bottomNormals[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-const float rightNormals[] = { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0 };
-const float leftNormals[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+float blockVertices[6][12] = {
+    {0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1}, //front
+    {0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0}, //back
+    {0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0}, //top
+    {0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1}, //bottom
+    {0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0}, //right
+    {1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1}}; //left
 
-const float frontTexcoords[] = {0, 0, 1, 0, 1, 1, 0, 1 };
-const float backTexcoords[] = {1, 0, 1, 1, 0, 1, 0, 0};
-const float topTexcoords[] = {0, 1, 0, 0, 1, 0, 1, 1};
-const float bottomTexcoords[] = {1, 1, 0, 1, 0, 0, 1, 0};
-const float rightTexcoords[] = {1, 0, 1, 1, 0, 1, 0, 0};
-const float leftTexcoords[] = {0, 0, 1, 0, 1, 1, 0, 1};
+float blockNormals[6][12] = {
+    {0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1}, //front
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //back
+    {0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0}, //top
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //bottom
+    {1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}, //right
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}; //left
+
+float blockTexcoords[6][12] = {
+    {0, 0, 1, 0, 1, 1, 0, 1}, //front
+    {1, 0, 1, 1, 0, 1, 0, 0}, //back
+    {0, 1, 0, 0, 1, 0, 1, 1}, //top
+    {1, 1, 0, 1, 0, 0, 1, 0}, //bottom
+    {1, 0, 1, 1, 0, 1, 0, 0}, //right
+    {0, 0, 1, 0, 1, 1, 0, 1}}; //left
 
 void addFaceVertices(Vector3 position, int side, float* verts, float* normals, float* texturecoords, int* index)
 {
-    switch (side)
-    {
-    case FRONT:
-        const float frontVertices[] = { 
-            position.x + 0, position.y + 0, position.z + 1, 
-            position.x + 1, position.y + 0, position.z + 1, 
-            position.x + 1, position.y + 1, position.z + 1, 
-            position.x + 0, position.y + 1, position.z + 1 };
-        memcpy(verts + *index*SIDE_VERTICES_COUNT, frontVertices, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(normals + *index*SIDE_VERTICES_COUNT, frontNormals, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(texturecoords + *index*8, frontTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
-        break;
-    case BACK:
-        const float backVertices[] = { 
-            position.x + 0, position.y + 0, position.z + 0, 
-            position.x + 0, position.y + 1, position.z + 0, 
-            position.x + 1, position.y + 1, position.z + 0, 
-            position.x + 1, position.y + 0, position.z + 0 };
-        memcpy(verts + *index*SIDE_VERTICES_COUNT, backVertices, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(normals + *index*SIDE_VERTICES_COUNT, backNormals, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(texturecoords + *index*8, backTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
-        break;
-    case TOP:
-        const float topVertices[] = { 
-            position.x + 0, position.y + 1, position.z + 0, 
-            position.x + 0, position.y + 1, position.z + 1, 
-            position.x + 1, position.y + 1, position.z + 1, 
-            position.x + 1, position.y + 1, position.z + 0 };
-        memcpy(verts + *index*SIDE_VERTICES_COUNT, topVertices, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(normals + *index*SIDE_VERTICES_COUNT, topNormals, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(texturecoords + *index*8, topTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
-        break;
-    case BOTTOM:
-        const float bottomVertices[] = { 
-            position.x + 0, position.y + 0, position.z + 0, 
-            position.x + 1, position.y + 0, position.z + 0, 
-            position.x + 1, position.y + 0, position.z + 1, 
-            position.x + 0, position.y + 0, position.z + 1 };
-        memcpy(verts + *index*SIDE_VERTICES_COUNT, bottomVertices, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(normals + *index*SIDE_VERTICES_COUNT, bottomNormals, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(texturecoords + *index*8, bottomTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
-        break;
-    case RIGHT:
-        const float rightVertices[] = { 
-            position.x + 1, position.y + 0, position.z + 0, 
-            position.x + 1, position.y + 1, position.z + 0, 
-            position.x + 1, position.y + 1, position.z + 1, 
-            position.x + 1, position.y + 0, position.z + 1 };
-        memcpy(verts + *index*SIDE_VERTICES_COUNT, rightVertices, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(normals + *index*SIDE_VERTICES_COUNT, rightNormals, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(texturecoords + *index*8, rightTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
-        break;
-    case LEFT:
-        const float leftVertices[] = { 
-            position.x + 0, position.y + 0, position.z + 0, 
-            position.x + 0, position.y + 0, position.z + 1, 
-            position.x + 0, position.y + 1, position.z + 1, 
-            position.x + 0, position.y + 1, position.z + 0 };
-        memcpy(verts + *index*SIDE_VERTICES_COUNT, leftVertices, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(normals + *index*SIDE_VERTICES_COUNT, leftNormals, SIDE_VERTICES_COUNT * sizeof(float));
-        memcpy(texturecoords + *index*8, leftTexcoords, SIDE_VERTICES_COUNT * sizeof(float));
-        break;
+    if(side == 5)
+    printf("SIDE: %d\n[%f, %f, %f]\n[%f, %f, %f]\n[%f, %f, %f]\n\n", side, blockVertices[side][0], blockVertices[side][1], blockVertices[side][2],
+        blockVertices[side][3], blockVertices[side][4], blockVertices[side][5],
+        blockVertices[side][6], blockVertices[side][7], blockVertices[side][8],
+        blockVertices[side][9], blockVertices[side][10], blockVertices[side][11]);
 
-    default:
-        return;
-    } 
-    *index += 1;
+    if (side >= 0 && side < 6)
+    {
+        const float vertices[] = { 
+            position.x + blockVertices[side][0], position.y + blockVertices[side][1], position.z + blockVertices[side][2], 
+            position.x + blockVertices[side][3], position.y + blockVertices[side][4], position.z + blockVertices[side][5], 
+            position.x + blockVertices[side][6], position.y + blockVertices[side][7], position.z + blockVertices[side][8], 
+            position.x + blockVertices[side][9], position.y + blockVertices[side][10], position.z + blockVertices[side][11]};
+
+        memcpy(verts + *index*SIDE_VERTICES_COUNT, vertices, SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(normals + *index*SIDE_VERTICES_COUNT, blockNormals[side], SIDE_VERTICES_COUNT * sizeof(float));
+        memcpy(texturecoords + *index*8, blockTexcoords[side], 32);
+        *index += 1;
+    }
 }
