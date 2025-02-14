@@ -23,13 +23,17 @@ int main()
 	DisableCursor();
 	SetTargetFPS(144);
 
-	// worldInit();
+	worldInit();
 
 	Chunk ch;
 	ch.position = (Vector3){1,1,0};
 	fillChunkSmooth(&ch, STONE);
 	Mesh meshChunk = genMeshChunk(ch);
 	Model modelChunk = LoadModelFromMesh(meshChunk);
+
+	Material materialChunk;
+
+	modelChunk.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = LoadTexture("resources/grass.png");
 
 	// Mesh meshBlock = genMeshBlock((Vector3){0,-4,0}, DIRT);
 	// Model modelBlock = LoadModelFromMesh(meshBlock);
@@ -45,9 +49,9 @@ int main()
 		BeginMode3D(camera);
 
 		DrawGrid(10, 1);
-		DrawModel(modelChunk, position, 1, WHITE);
+		// DrawModel(modelChunk, position, 1, WHITE);
 		// DrawModel(modelBlock, position, 1, BROWN);
-		// drawChunks();
+		drawChunks();
 		DrawCube((Vector3){2, 0, 0}, 2, 0.1, 0.1, RED);
 		DrawCube((Vector3){0, 2, 0}, 0.1, 2, 0.1, GREEN);
 		DrawCube((Vector3){0, 0, 2}, 0.1, 0.1, 2, BLUE);

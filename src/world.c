@@ -14,6 +14,7 @@ void worldInit()
         fillChunkSmooth(&(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT]), STONE);
         chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].mesh = genMeshChunk(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT]);
         chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].model = LoadModelFromMesh(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].mesh);
+        chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].model.materials[0].maps->texture = LoadTexture("resources/cobblestone.png");
     }
 }
 
@@ -29,6 +30,6 @@ void drawChunks()
         // bool chright =  true;
 
 		// drawChunk(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT], chtop, chbottom, chfront, chback, chleft, chright);
-        // DrawModel(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].model, (Vector3){0,0,0}, 1, WHITE);
+        DrawModel(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].model, (Vector3){0,0,0}, 1, WHITE);
     }
 }

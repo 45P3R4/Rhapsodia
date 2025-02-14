@@ -34,6 +34,6 @@ void DrawBlock(Vector3i position, int block, bool top, bool bottom, bool front, 
 
 Mesh genMeshBlock(Vector3 position, int block);
 
-void addFaceVertices(Vector3 position, int side, float* verts, float* normals, int* index);
+void addFaceVertices(Vector3 position, int side, float* verts, float* normals, float* texturecoords, int* index);
 
 #endif /* BLOCK */
