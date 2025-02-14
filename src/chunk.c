@@ -101,8 +101,6 @@ Mesh genMeshChunk(Chunk ch)
         
     }
 
-    printf("faces: %d\n", faces);
-
     mesh.vertices = (float *)RL_MALLOC(verticesCount * sizeof(float));
     memcpy(mesh.vertices, vertices, verticesCount * sizeof(float));
 
