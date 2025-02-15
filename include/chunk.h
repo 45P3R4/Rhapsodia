@@ -4,12 +4,11 @@
 #include "raylib.h"
 #include "block.h"
 #include "noise.h"
+#include "settings.h"
 
 #include <stdlib.h> //rand
 #include <stdio.h>
 #include <math.h>
-
-#define CHUNK_SIZE 16
 
 typedef struct
 {

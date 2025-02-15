@@ -1,6 +1,6 @@
 #include <mem.h>
 #include "chunk.h"
-#include "world.h"
+#include "settings.h"
 
 #define MAX_MESH_VBO 7
 
@@ -70,47 +70,45 @@ Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], int xPos, int zPos)
         bool rightIsAir  = ch[xPos][zPos].blocks[x+1][y][z] == AIR;
         bool leftIsAir   = ch[xPos][zPos].blocks[x-1][y][z] == AIR;
 
-        bool lastBlockZ = (z >= CHUNK_SIZE-1);
-        bool lastBlockY = (y >= CHUNK_SIZE-1);
-        bool lastBlockX = (x >= CHUNK_SIZE-1);
+        bool lastBlockZ = (z == CHUNK_SIZE-1);
+        bool lastBlockY = (y == CHUNK_SIZE-1);
+        bool lastBlockX = (x == CHUNK_SIZE-1);
 
-        bool firstBlockZ = (z <= 0);
-        bool firstBlockY = (y <= 0);
-        bool firstBlockX = (x <= 0);
+        bool firstBlockZ = (z == 0);
+        bool firstBlockY = (y == 0);
+        bool firstBlockX = (x == 0);
 
-        if(lastBlockZ) {
+        if(lastBlockZ) 
             if (zPos >= CHUNKS_COUNT-1)
                 frontIsAir  = ch[xPos][zPos+1].blocks[x][y][0] == AIR;
             else
                 frontIsAir  = false;
-        }
-        if(lastBlockY) {
-            // rightIsAir  = ch[xPos+1][zPos].blocks[0][y][z] == AIR;
+
+        if(lastBlockY) 
             topIsAir  = false;
-        }
-        if(lastBlockX) {
+
+        if(lastBlockX) 
             if (xPos >= CHUNKS_COUNT-1)
                 rightIsAir  = ch[xPos+1][zPos].blocks[0][y][z] == AIR;
             else
                 rightIsAir  = false;
-        }
 
-        if(firstBlockZ) {
+
+        if(firstBlockZ) 
             if (zPos <= 0)
                 backIsAir = ch[xPos][zPos-1].blocks[x][y][CHUNK_SIZE] == AIR;
             else
                 backIsAir = false;
-        }
-        if(firstBlockY) {
-            // frontIsAir  = ch[xPos][zPos+1].blocks[x][y][0] == AIR;
+
+        if(firstBlockY) 
             bottomIsAir  = false;
-        }
-        if(firstBlockX) {
+
+        if(firstBlockX) 
             if (xPos <= 0)
                 leftIsAir   = ch[xPos-1][zPos].blocks[CHUNK_SIZE][y][z] == AIR;
             else
                 leftIsAir   = false;
-        }
+
         
         bool isDrawingSide[6] = {
         (blockIsNotAir && frontIsAir), //front
@@ -119,6 +117,23 @@ Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], int xPos, int zPos)
         (blockIsNotAir && bottomIsAir), //bottom
         (blockIsNotAir && rightIsAir), //right
         (blockIsNotAir && leftIsAir)}; //left
+
+        if ( (int)x + xPos*CHUNK_SIZE == 19 &&
+             (int)y == 12 &&
+             (int)z + zPos*CHUNK_SIZE == 16 )
+        {
+
+            DrawText(TextFormat("\nfront : %d\n back: %d\n top : %d\n bottom: %d\n right : %d\n left: %d\n\n blockIsNotAir: %d\n backIsAir: %d\n\n",
+                isDrawingSide[0],
+                isDrawingSide[1],
+                isDrawingSide[2],
+                isDrawingSide[3],
+                isDrawingSide[4],
+                isDrawingSide[5],
+                blockIsNotAir,
+                backIsAir),
+                20, 20, 20, GREEN);
+        }
 
         for (int k = 0; k < 6; k++)
             if (isDrawingSide[k])

@@ -6,7 +6,7 @@
 
 int main()
 {
-	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE);
 
 	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rhapsodia");
 
@@ -16,6 +16,9 @@ int main()
 	camera.up = (Vector3){0.0f, 1.0f, 0.0f};	   // Camera up vector (rotation towards target)
 	camera.fovy = 60.0f;						   // Camera field-of-view Y
 	camera.projection = CAMERA_PERSPECTIVE;		   // Camera projection type
+
+	Mesh testCubeMesh = GenMeshCube(0.1, 0.1, 0.1);
+	Model testCubeModel = LoadModelFromMesh(testCubeMesh);
 
 	DisableCursor();
 	SetTargetFPS(144);
@@ -34,6 +37,14 @@ int main()
 		ClearBackground(skyColor);
 		BeginMode3D(camera);
 
+		Vector3 testCubePosition = (Vector3) {
+			camera.position.x,
+			camera.position.y - 1,
+			camera.position.z + 1
+		};
+
+		DrawModel(testCubeModel, testCubePosition, 1, WHITE);
+
 		DrawGrid(10, 1);
 		DrawCube((Vector3){2, 0, 0}, 2, 0.1, 0.1, RED);
 		DrawCube((Vector3){0, 2, 0}, 0.1, 2, 0.1, GREEN);
@@ -43,7 +54,10 @@ int main()
 
 		EndMode3D();
 		DrawFPS(3, 3);
-		DrawText("v0.0.1 dev", SCREEN_WIDTH - 50, SCREEN_HEIGHT - 20, 10, WHITE);
+
+		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", (int)testCubePosition.x, (int)testCubePosition.y, (int)testCubePosition.z), 3, 40, 20, WHITE);
+		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]", (int)testCubePosition.x  % 16, (int)testCubePosition.y  % 16, (int)testCubePosition.z  % 16), 3, 60, 20, WHITE);
+		DrawText(TextFormat("Chunk [x: %d, z: %d]", (int)testCubePosition.x / 16, (int)testCubePosition.z /16), 3, 80, 20, WHITE);
 		EndDrawing();
 	}
 
