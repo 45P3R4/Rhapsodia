@@ -3,18 +3,21 @@
 
 Color skyColor = (Color){135, 206, 235, 255};
 
-Chunk chunks[CHUNKS_COUNT][CHUNKS_COUNT];
+Chunk chunks[CHUNK_SIZE][CHUNK_SIZE];
 	
-
 void worldInit()
 {
     for (int i = 0; i < CHUNKS_COUNT * CHUNKS_COUNT; i++)
-    {
-        chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].position = (Vector3){i / CHUNKS_COUNT*CHUNK_SIZE, 0, i % CHUNKS_COUNT*CHUNK_SIZE};
-        fillChunkSmooth(&(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT]), STONE);
-        chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].mesh = genMeshChunk(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT]);
-        chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].model = LoadModelFromMesh(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].mesh);
-        chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].model.materials[0].maps->texture = LoadTexture("resources/test.png");
+    { 
+        int x = i / CHUNKS_COUNT;
+        int z = i % CHUNKS_COUNT;
+
+        chunks[x][z].position = (Vector3){x*CHUNK_SIZE, 0, z*CHUNK_SIZE};
+        fillChunkSmooth(&(chunks[x][z]), STONE);
+        
+        chunks[x][z].mesh = genMeshChunk(chunks, x, z);
+        chunks[x][z].model = LoadModelFromMesh(chunks[x][z].mesh);
+        chunks[x][z].model.materials[0].maps->texture = LoadTexture("resources/test.png");
     }
 }
 
@@ -22,14 +25,9 @@ void drawChunks()
 {
     for (int i = 0; i < CHUNKS_COUNT * CHUNKS_COUNT; i++)
     {
-        // bool chtop =    true;
-        // bool chbottom = true;
-        // bool chfront =  true;
-        // bool chback =   true;
-        // bool chleft =   true;
-        // bool chright =  true;
+        int x = i / CHUNKS_COUNT;
+        int z = i % CHUNKS_COUNT;
 
-		// drawChunk(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT], chtop, chbottom, chfront, chback, chleft, chright);
-        DrawModel(chunks[i / CHUNKS_COUNT][i % CHUNKS_COUNT].model, (Vector3){0,0,0}, 1, WHITE);
+        DrawModel(chunks[x][z].model, (Vector3){0,0,0}, 1, WHITE);
     }
 }

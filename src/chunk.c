@@ -1,5 +1,6 @@
 #include <mem.h>
 #include "chunk.h"
+#include "world.h"
 
 #define MAX_MESH_VBO 7
 
@@ -28,12 +29,16 @@ void fillChunk(Chunk *ch, int blockType)
 {
     for (int i = 0; i < pow(CHUNK_SIZE, 3); i++)
     {
-        ch->blocks[i % CHUNK_SIZE][(i / CHUNK_SIZE) % CHUNK_SIZE][i / (CHUNK_SIZE * CHUNK_SIZE)] = blockType;
+        int x = i % CHUNK_SIZE;
+        int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
+        int z = i / (CHUNK_SIZE * CHUNK_SIZE);
+
+        ch->blocks[x][y][z] = blockType;
     }
 }
 
 
-Mesh genMeshChunk(Chunk ch)
+Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], int xPos, int zPos)
 {
     Mesh mesh = {0};
     mesh.vboId = (unsigned int *)RL_CALLOC(MAX_MESH_VBO, sizeof(unsigned int));
@@ -46,58 +51,82 @@ Mesh genMeshChunk(Chunk ch)
     int texcoordsCount = 0;
     int normalsCount = 0;
 
+    int index = 0;
+
     for (int i = 0; i < pow(CHUNK_SIZE, 3); i++)
     {
         int x = i % CHUNK_SIZE;
         int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
         int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
-        bool top    = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y+1][z] == AIR && y < CHUNK_SIZE-1);
-        bool bottom = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y-1][z] == AIR && y > 0);
-        bool front  = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y][z+1] == AIR && z < CHUNK_SIZE-1);
-        bool back   = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y][z-1] == AIR && z > 0);
-        bool right  = (ch.blocks[x][y][z] != AIR && ch.blocks[x+1][y][z] == AIR && x < CHUNK_SIZE-1);
-        bool left   = (ch.blocks[x][y][z] != AIR && ch.blocks[x-1][y][z] == AIR && x > 0);
+        Vector3 blockPosition = (Vector3){(float)x + ch[xPos][zPos].position.x,  (float)y + ch[xPos][zPos].position.y, (float)z + ch[xPos][zPos].position.z};
 
-        if (top || bottom || front || back || right ||left)
-        {
-            verticesCount += 36 * 3;
-            texcoordsCount += 36 * 2;
-            normalsCount += 36 * 3;
+        bool blockIsNotAir = ch[xPos][zPos].blocks[x][y][z] != AIR;
+
+        bool topIsAir    = ch[xPos][zPos].blocks[x][y+1][z] == AIR;
+        bool bottomIsAir = ch[xPos][zPos].blocks[x][y-1][z] == AIR;
+        bool frontIsAir  = ch[xPos][zPos].blocks[x][y][z+1] == AIR;
+        bool backIsAir   = ch[xPos][zPos].blocks[x][y][z-1] == AIR;
+        bool rightIsAir  = ch[xPos][zPos].blocks[x+1][y][z] == AIR;
+        bool leftIsAir   = ch[xPos][zPos].blocks[x-1][y][z] == AIR;
+
+        bool lastBlockZ = (z >= CHUNK_SIZE-1);
+        bool lastBlockY = (y >= CHUNK_SIZE-1);
+        bool lastBlockX = (x >= CHUNK_SIZE-1);
+
+        bool firstBlockZ = (z <= 0);
+        bool firstBlockY = (y <= 0);
+        bool firstBlockX = (x <= 0);
+
+        if(lastBlockZ) {
+            if (zPos >= CHUNKS_COUNT-1)
+                frontIsAir  = ch[xPos][zPos+1].blocks[x][y][0] == AIR;
+            else
+                frontIsAir  = false;
         }
-    }
+        if(lastBlockY) {
+            // rightIsAir  = ch[xPos+1][zPos].blocks[0][y][z] == AIR;
+            topIsAir  = false;
+        }
+        if(lastBlockX) {
+            if (xPos >= CHUNKS_COUNT-1)
+                rightIsAir  = ch[xPos+1][zPos].blocks[0][y][z] == AIR;
+            else
+                rightIsAir  = false;
+        }
 
-    int faces = 0;
+        if(firstBlockZ) {
+            if (zPos <= 0)
+                backIsAir = ch[xPos][zPos-1].blocks[x][y][CHUNK_SIZE] == AIR;
+            else
+                backIsAir = false;
+        }
+        if(firstBlockY) {
+            // frontIsAir  = ch[xPos][zPos+1].blocks[x][y][0] == AIR;
+            bottomIsAir  = false;
+        }
+        if(firstBlockX) {
+            if (xPos <= 0)
+                leftIsAir   = ch[xPos-1][zPos].blocks[CHUNK_SIZE][y][z] == AIR;
+            else
+                leftIsAir   = false;
+        }
+        
+        bool isDrawingSide[6] = {
+        (blockIsNotAir && frontIsAir), //front
+        (blockIsNotAir && backIsAir), //back
+        (blockIsNotAir && topIsAir), //top
+        (blockIsNotAir && bottomIsAir), //bottom
+        (blockIsNotAir && rightIsAir), //right
+        (blockIsNotAir && leftIsAir)}; //left
 
-    Vector3 pos = {3,0,0};
+        for (int k = 0; k < 6; k++)
+            if (isDrawingSide[k])
+                addFaceVertices(blockPosition, k, vertices, normals, texcoords, &index);
 
-    for (int i = 0; i < pow(CHUNK_SIZE, 3); i++)
-    {
-        int x = i % CHUNK_SIZE;
-        int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
-        int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
-        Vector3 blockPosition = (Vector3){(float)x + ch.position.x,  (float)y + ch.position.y, (float)z + ch.position.z};
-
-        bool top    = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y+1][z] == AIR && y < CHUNK_SIZE-1);
-        bool bottom = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y-1][z] == AIR && y > 0);
-        bool front  = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y][z+1] == AIR && z < CHUNK_SIZE-1);
-        bool back   = (ch.blocks[x][y][z] != AIR && ch.blocks[x][y][z-1] == AIR && z > 0);
-        bool right  = (ch.blocks[x][y][z] != AIR && ch.blocks[x+1][y][z] == AIR && x < CHUNK_SIZE-1);
-        bool left   = (ch.blocks[x][y][z] != AIR && ch.blocks[x-1][y][z] == AIR && x > 0);
-
-        if (front)
-            addFaceVertices(blockPosition, FRONT, vertices, normals, texcoords, &faces);
-        if (back)
-            addFaceVertices(blockPosition, BACK, vertices, normals, texcoords, &faces);
-        if (top)
-            addFaceVertices(blockPosition, TOP, vertices, normals, texcoords, &faces);
-        if (bottom)
-            addFaceVertices(blockPosition, BOTTOM, vertices, normals, texcoords, &faces);
-        if (right)
-            addFaceVertices(blockPosition, RIGHT, vertices, normals, texcoords, &faces);
-        if (left)
-            addFaceVertices(blockPosition, LEFT, vertices, normals, texcoords, &faces);  
+        verticesCount += 36 * 3;
+        texcoordsCount += 36 * 2;
+        normalsCount += 36 * 3;
         
     }
 
@@ -110,8 +139,8 @@ Mesh genMeshChunk(Chunk ch)
     mesh.normals = (float *)RL_MALLOC(normalsCount * sizeof(float));
     memcpy(mesh.normals, normals, normalsCount * sizeof(float));
 
-    mesh.vertexCount = verticesCount / 3;         // fixme: Why divide by 3 ???
-    mesh.triangleCount = (verticesCount / 3) / 2; // fixme: Why divide by 3 and 2 ???
+    mesh.vertexCount = verticesCount / 3;
+    mesh.triangleCount = (verticesCount / 3) / 2;
 
     RL_FREE(vertices);
     RL_FREE(texcoords);

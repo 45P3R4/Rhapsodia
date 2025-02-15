@@ -1,11 +1,14 @@
 #include "raylib.h"
 #include "world.h"
 
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
+
 int main()
 {
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
 
-	InitWindow(1280, 720, "Rhapsodia");
+	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rhapsodia");
 
 	Camera3D camera = {0};
 	camera.position = (Vector3){5.0f, 1.7f, 0.0f}; // Camera position
@@ -14,16 +17,17 @@ int main()
 	camera.fovy = 60.0f;						   // Camera field-of-view Y
 	camera.projection = CAMERA_PERSPECTIVE;		   // Camera projection type
 
-	Vector3 boxPosition = {0.0f, 0.0f, 0.0f};
-
 	DisableCursor();
 	SetTargetFPS(144);
+
+	// GenMeshCube
 
 	worldInit();
 
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
+
 		UpdateCamera(&camera, CAMERA_FREE);
 
 		BeginDrawing();
@@ -39,6 +43,7 @@ int main()
 
 		EndMode3D();
 		DrawFPS(3, 3);
+		DrawText("v0.0.1 dev", SCREEN_WIDTH - 50, SCREEN_HEIGHT - 20, 10, WHITE);
 		EndDrawing();
 	}
 

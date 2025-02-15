@@ -28,6 +28,6 @@ void fillChunkSmooth(Chunk* ch, int blockType);
 
 void fillChunk(Chunk *ch, int blockType);
 
-Mesh genMeshChunk(Chunk ch);
+Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], int xPos, int zPos);
 
 #endif /* CHUNK */

@@ -8,16 +8,17 @@ float blockVertices[6][12] = {
     {0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0}, //back
     {0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0}, //top
     {0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1}, //bottom
-    {0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0}, //right
-    {1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1}}; //left
+    {1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1}, //right
+    {0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0}}; //left
+
 
 float blockNormals[6][12] = {
-    {0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1}, //front
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //back
-    {0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0}, //top
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, //bottom
-    {1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0}, //right
-    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}; //left
+    { 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1}, //front
+    { 0, 0,-1, 0, 0,-1, 0, 0,-1, 0, 0,-1}, //back
+    { 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,}, //top
+    { 0,-1, 0, 0,-1, 0, 0,-1, 0, 0,-1, 0,}, //bottom
+    { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,}, //right
+    { -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0}}; //left
 
 float blockTexcoords[6][12] = {
     {0, 0, 1, 0, 1, 1, 0, 1}, //front
@@ -29,12 +30,6 @@ float blockTexcoords[6][12] = {
 
 void addFaceVertices(Vector3 position, int side, float* verts, float* normals, float* texturecoords, int* index)
 {
-    if(side == 5)
-    printf("SIDE: %d\n[%f, %f, %f]\n[%f, %f, %f]\n[%f, %f, %f]\n\n", side, blockVertices[side][0], blockVertices[side][1], blockVertices[side][2],
-        blockVertices[side][3], blockVertices[side][4], blockVertices[side][5],
-        blockVertices[side][6], blockVertices[side][7], blockVertices[side][8],
-        blockVertices[side][9], blockVertices[side][10], blockVertices[side][11]);
-
     if (side >= 0 && side < 6)
     {
         const float vertices[] = { 
