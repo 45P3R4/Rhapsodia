@@ -1,5 +1,4 @@
 #include <stdlib.h>
-#include "settings.h"
 #include "world.h"
 
 Color skyColor = (Color){135, 206, 235, 255};
@@ -31,4 +30,22 @@ void drawChunks()
 
         DrawModel(chunks[x][z].model, (Vector3){0,0,0}, 1, WHITE);
     }
+}
+
+void updateChunk(int chunkX, int chunkZ)
+{
+    printf("\n update: [x: %d, z: %d]\n", chunkX, chunkZ);
+    // UnloadMesh(chunks[chunkX][chunkZ].mesh);
+    // UnloadModel(chunks[chunkX][chunkZ].model);
+
+    chunks[chunkX][chunkZ].mesh = genMeshChunk(chunks, chunkX, chunkZ);
+    chunks[chunkX][chunkZ].model = LoadModelFromMesh(chunks[chunkX][chunkZ].mesh);
+    chunks[chunkX][chunkZ].model.materials[0].maps->texture = LoadTexture("resources/test.png");
+}
+
+void deleteBlock(int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ)
+{
+    printf("delete on: [%d, %d, %d]\n", chunkX, chunkY, chunkZ, blockX, blockY, blockZ);
+    chunks[chunkX][chunkZ].blocks[blockX][blockY][blockZ] == AIR;
+    updateChunk(chunkX, chunkZ);
 }

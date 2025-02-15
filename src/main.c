@@ -1,8 +1,9 @@
 #include "raylib.h"
+#include "settings.h"
 #include "world.h"
+#include "player.h"
 
-#define SCREEN_WIDTH 1280
-#define SCREEN_HEIGHT 720
+
 
 int main()
 {
@@ -27,15 +28,23 @@ int main()
 
 	worldInit();
 
+	printf("block: %d\n", chunks[0][0].blocks[0][8][0]);
+
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
 
 		UpdateCamera(&camera, CAMERA_FREE);
 
+		// GetRayCollisionBox
+
+		
+
 		BeginDrawing();
 		ClearBackground(skyColor);
 		BeginMode3D(camera);
+
+		playerUpdate(chunks, camera);
 
 		Vector3 testCubePosition = (Vector3) {
 			camera.position.x,
@@ -58,6 +67,9 @@ int main()
 		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", (int)testCubePosition.x, (int)testCubePosition.y, (int)testCubePosition.z), 3, 40, 20, WHITE);
 		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]", (int)testCubePosition.x  % 16, (int)testCubePosition.y  % 16, (int)testCubePosition.z  % 16), 3, 60, 20, WHITE);
 		DrawText(TextFormat("Chunk [x: %d, z: %d]", (int)testCubePosition.x / 16, (int)testCubePosition.z /16), 3, 80, 20, WHITE);
+
+		playerDebugInfo();
+
 		EndDrawing();
 	}
 
