@@ -34,7 +34,7 @@ void drawChunks()
 
 void updateChunk(int chunkX, int chunkZ)
 {
-    printf("\n update: [x: %d, z: %d]\n", chunkX, chunkZ);
+    printf("\nupdate: [x: %d, z: %d]\n", chunkX, chunkZ);
     // UnloadMesh(chunks[chunkX][chunkZ].mesh);
     // UnloadModel(chunks[chunkX][chunkZ].model);
 
@@ -45,7 +45,9 @@ void updateChunk(int chunkX, int chunkZ)
 
 void deleteBlock(int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ)
 {
-    printf("delete on: [%d, %d, %d]\n", chunkX, chunkY, chunkZ, blockX, blockY, blockZ);
-    chunks[chunkX][chunkZ].blocks[blockX][blockY][blockZ] == AIR;
+    printf("\ndelete on:\n\tchunk:[%d, %d, %d]\n\tblock:[%d, %d, %d]\n", chunkX, chunkY, chunkZ, blockX, blockY, blockZ);
+    printf("block: %d\n", chunks[chunkX][chunkZ].blocks[blockX][blockY][blockZ]);
+    chunks[chunkX][chunkZ].blocks[blockX][blockY][blockZ] = AIR;
+    printf("block after: %d\n", chunks[chunkX][chunkZ].blocks[blockX][blockY][blockZ]);
     updateChunk(chunkX, chunkZ);
 }

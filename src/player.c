@@ -24,8 +24,7 @@ void playerUpdate(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], Camera3D camera)
 
         if (collision.hit)
         {
-            
-            deleteBlock((int)collision.point.x / 16, 0, (int)collision.point.z / 16, (int)collision.point.x % 16, (int)collision.point.y % 16, (int)collision.point.z % 16);
+            deleteBlock((int)collision.point.x / 16, 0, (int)collision.point.z / 16, (int)collision.point.x % 16, (int)collision.point.y % 16 - 1, (int)collision.point.z % 16);
             // deleteBlock(0, 0, 0, 0, 8, 0);
             printf("block: %d\n", chunks[0][0].blocks[0][8][0]);
             collision.hit = !collision.hit;
