@@ -19,13 +19,12 @@ void playerUpdate(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], Camera3D camera)
             else collision.hit = false;
         }
 
-        Vector3 pos = {(float)((int)collision.point.x)+0.5, (float)((int)collision.point.y)-0.5, (float)((int)collision.point.z)+0.5};
+        Vector3 pos = {(float)((int)collision.point.x)+0.5, (float)((int)collision.point.y)+0.5, (float)((int)collision.point.z)+0.5};
             DrawCube(pos, 1.01, 1.01, 1.01, RED);
 
         if (collision.hit)
         {
-            deleteBlock((int)collision.point.x / 16, 0, (int)collision.point.z / 16, (int)collision.point.x % 16, (int)collision.point.y % 16 - 1, (int)collision.point.z % 16);
-            // deleteBlock(0, 0, 0, 0, 8, 0);
+            deleteBlock((int)collision.point.x / 16, 0, (int)collision.point.z / 16, (int)collision.point.x % 16, (int)collision.point.y % 16, (int)collision.point.z % 16);
             printf("block: %d\n", chunks[0][0].blocks[0][8][0]);
             collision.hit = !collision.hit;
         }
