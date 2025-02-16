@@ -27,6 +27,6 @@ void fillChunkSmooth(Chunk* ch, int blockType);
 
 void fillChunk(Chunk *ch, int blockType);
 
-Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], int xPos, int zPos);
+Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], int chunkX, int chunkY, int chunkZ);
 
 #endif /* CHUNK */

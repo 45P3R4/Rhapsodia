@@ -23,6 +23,7 @@ void fillChunkSmooth(Chunk* ch, int blockType)
         else
             ch->blocks[x][y][z] = AIR;
     }
+    printf("filled");
 }
 
 void fillChunk(Chunk *ch, int blockType)
@@ -38,7 +39,7 @@ void fillChunk(Chunk *ch, int blockType)
 }
 
 
-Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], int xPos, int zPos)
+Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], int chunkX, int chunkY, int chunkZ)
 {
     Mesh mesh = {0};
     mesh.vboId = (unsigned int *)RL_CALLOC(MAX_MESH_VBO, sizeof(unsigned int));
@@ -59,57 +60,42 @@ Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], int xPos, int zPos)
         int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
         int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
-        Vector3 blockPosition = (Vector3){(float)x + ch[xPos][zPos].position.x,  (float)y + ch[xPos][zPos].position.y, (float)z + ch[xPos][zPos].position.z};
+        Vector3 blockPosition = (Vector3){
+            (float)x + ch[chunkX][chunkY][chunkZ].position.x,  
+            (float)y + ch[chunkX][chunkY][chunkZ].position.y, 
+            (float)z + ch[chunkX][chunkY][chunkZ].position.z};
 
-        bool blockIsNotAir = ch[xPos][zPos].blocks[x][y][z] != AIR;
+        bool blockIsNotAir = ch[chunkX][chunkY][chunkZ].blocks[x][y][z] != AIR;
 
-        bool topIsAir    = ch[xPos][zPos].blocks[x][y+1][z] == AIR;
-        bool bottomIsAir = ch[xPos][zPos].blocks[x][y-1][z] == AIR;
-        bool frontIsAir  = ch[xPos][zPos].blocks[x][y][z+1] == AIR;
-        bool backIsAir   = ch[xPos][zPos].blocks[x][y][z-1] == AIR;
-        bool rightIsAir  = ch[xPos][zPos].blocks[x+1][y][z] == AIR;
-        bool leftIsAir   = ch[xPos][zPos].blocks[x-1][y][z] == AIR;
+        bool topIsAir    = ch[chunkX][chunkY][chunkZ].blocks[x][y+1][z] == AIR;
+        bool bottomIsAir = ch[chunkX][chunkY][chunkZ].blocks[x][y-1][z] == AIR;
+        bool frontIsAir  = ch[chunkX][chunkY][chunkZ].blocks[x][y][z+1] == AIR;
+        bool backIsAir   = ch[chunkX][chunkY][chunkZ].blocks[x][y][z-1] == AIR;
+        bool rightIsAir  = ch[chunkX][chunkY][chunkZ].blocks[x+1][y][z] == AIR;
+        bool leftIsAir   = ch[chunkX][chunkY][chunkZ].blocks[x-1][y][z] == AIR;
 
-        bool lastBlockZ = (z == CHUNK_SIZE-1);
-        bool lastBlockY = (y == CHUNK_SIZE-1);
-        bool lastBlockX = (x == CHUNK_SIZE-1);
+        bool lastBlockZ = (z >= CHUNK_SIZE-1);
+        bool lastBlockY = (y >= CHUNK_SIZE-1);
+        bool lastBlockX = (x >= CHUNK_SIZE-1);
 
-        bool firstBlockZ = (z == 0);
-        bool firstBlockY = (y == 0);
-        bool firstBlockX = (x == 0);
+        bool firstBlockZ = (z <= 0);
+        bool firstBlockY = (y <= 0);
+        bool firstBlockX = (x <= 0);
 
-        if(lastBlockZ) 
-            if (zPos >= CHUNKS_COUNT-1)
-                frontIsAir  = ch[xPos][zPos+1].blocks[x][y][0] == AIR;
-            else
-                frontIsAir  = false;
+        if (lastBlockZ)
+            frontIsAir = false;
+        if (lastBlockY)
+            topIsAir = false;
+        if (lastBlockX)
+            rightIsAir = false;
 
-        if(lastBlockY) 
-            topIsAir  = false;
+        if (firstBlockZ)
+            backIsAir = false;
+        if (firstBlockY)
+            bottomIsAir = false;
+        if (firstBlockX)
+            leftIsAir = false;
 
-        if(lastBlockX) 
-            if (xPos >= CHUNKS_COUNT-1)
-                rightIsAir  = ch[xPos+1][zPos].blocks[0][y][z] == AIR;
-            else
-                rightIsAir  = false;
-
-
-        if(firstBlockZ) 
-            if (zPos <= 0)
-                backIsAir = ch[xPos][zPos-1].blocks[x][y][CHUNK_SIZE] == AIR;
-            else
-                backIsAir = false;
-
-        if(firstBlockY) 
-            bottomIsAir  = false;
-
-        if(firstBlockX) 
-            if (xPos <= 0)
-                leftIsAir   = ch[xPos-1][zPos].blocks[CHUNK_SIZE][y][z] == AIR;
-            else
-                leftIsAir   = false;
-
-        
         bool isDrawingSide[6] = {
         (blockIsNotAir && frontIsAir), //front
         (blockIsNotAir && backIsAir), //back
@@ -117,23 +103,6 @@ Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], int xPos, int zPos)
         (blockIsNotAir && bottomIsAir), //bottom
         (blockIsNotAir && rightIsAir), //right
         (blockIsNotAir && leftIsAir)}; //left
-
-        if ( (int)x + xPos*CHUNK_SIZE == 19 &&
-             (int)y == 12 &&
-             (int)z + zPos*CHUNK_SIZE == 16 )
-        {
-
-            DrawText(TextFormat("\nfront : %d\n back: %d\n top : %d\n bottom: %d\n right : %d\n left: %d\n\n blockIsNotAir: %d\n backIsAir: %d\n\n",
-                isDrawingSide[0],
-                isDrawingSide[1],
-                isDrawingSide[2],
-                isDrawingSide[3],
-                isDrawingSide[4],
-                isDrawingSide[5],
-                blockIsNotAir,
-                backIsAir),
-                20, 20, 20, GREEN);
-        }
 
         for (int k = 0; k < 6; k++)
             if (isDrawingSide[k])

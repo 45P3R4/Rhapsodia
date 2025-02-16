@@ -3,15 +3,14 @@
 Ray ray = { 0 };                    // Picking line ray
 RayCollision collision = { 0 };     // Ray collision hit info
 
-void playerUpdate(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], Camera3D camera)
+void playerUpdate(Chunk ch[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], Camera3D camera)
 {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
             if (!collision.hit)
             {
-                ray = GetScreenToWorldRay((Vector2){SCREEN_WIDTH/2, SCREEN_HEIGHT/2}, camera);
+                ray = GetScreenToWorldRay((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, camera);
 
-                // Check collision between ray and box
                 collision = GetRayCollisionBox(ray,
                             (BoundingBox){(Vector3){ 0, 0, 0 },
                                           (Vector3){ CHUNK_SIZE, 9, CHUNK_SIZE }});
@@ -24,8 +23,9 @@ void playerUpdate(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], Camera3D camera)
 
         if (collision.hit)
         {
-            deleteBlock((int)collision.point.x / 16, 0, (int)collision.point.z / 16, (int)collision.point.x % 16, (int)collision.point.y % 16, (int)collision.point.z % 16);
-            printf("block: %d\n", chunks[0][0].blocks[0][8][0]);
+            deleteBlock((int)collision.point.x / 16, (int)collision.point.y / 16, (int)collision.point.z / 16, 
+                        (int)collision.point.x % 16, (int)collision.point.y % 16, (int)collision.point.z % 16);
+            printf("block: %d\n", chunks[0][0][0].blocks[0][8][0]);
             collision.hit = !collision.hit;
         }
 

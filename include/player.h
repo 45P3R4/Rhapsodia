@@ -12,7 +12,7 @@ typedef struct
     Vector3 size;
 } Player;
 
-void playerUpdate(Chunk ch[CHUNK_SIZE][CHUNK_SIZE], Camera3D camera);
+void playerUpdate(Chunk ch[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], Camera3D camera);
 
 void playerDebugInfo();
 

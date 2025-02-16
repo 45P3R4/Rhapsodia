@@ -3,8 +3,6 @@
 #include "world.h"
 #include "player.h"
 
-
-
 int main()
 {
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE);
@@ -24,21 +22,12 @@ int main()
 	DisableCursor();
 	SetTargetFPS(144);
 
-	// GenMeshCube
-
 	worldInit();
-
-	printf("block: %d\n", chunks[0][0].blocks[0][8][0]);
 
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
-
 		UpdateCamera(&camera, CAMERA_FREE);
-
-		// GetRayCollisionBox
-
-		
 
 		BeginDrawing();
 		ClearBackground(skyColor);
@@ -62,17 +51,15 @@ int main()
 		drawChunks();
 
 		EndMode3D();
-		DrawFPS(3, 3);
 
-		// DrawLine(SCREEN_WIDTH/2-1, SCREEN_HEIGHT/2,SCREEN_WIDTH/2+1, SCREEN_HEIGHT/2, WHITE);
-		// DrawLine(SCREEN_WIDTH/2, SCREEN_HEIGHT/2-1, SCREEN_WIDTH/2, SCREEN_HEIGHT/2+1, WHITE);
-		DrawRectangle(SCREEN_WIDTH/2-2, SCREEN_HEIGHT/2-2, 4, 4, WHITE);
+		DrawFPS(3, 3);
+		DrawRectangle(GetScreenWidth()/2-2, GetScreenHeight()/2-2, 4, 4, WHITE);
 
 		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", (int)testCubePosition.x, (int)testCubePosition.y, (int)testCubePosition.z), 3, 40, 20, WHITE);
 		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]", (int)testCubePosition.x  % 16, (int)testCubePosition.y  % 16, (int)testCubePosition.z  % 16), 3, 60, 20, WHITE);
 		DrawText(TextFormat("Chunk [x: %d, z: %d]", (int)testCubePosition.x / 16, (int)testCubePosition.z /16), 3, 80, 20, WHITE);
 
-		playerDebugInfo();
+		// playerDebugInfo();
 
 		EndDrawing();
 	}
