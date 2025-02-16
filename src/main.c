@@ -1,15 +1,13 @@
 #include "raylib.h"
-#include "resource_dir.h" // utility header for SearchAndSetResourceDir
-#include "noise.h"
+#include "settings.h"
 #include "world.h"
+#include "player.h"
 
 int main()
 {
-	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI);
+	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE);
 
-	InitWindow(1280, 720, "Rhapsodia");
-
-	// SearchAndSetResourceDir("resources");
+	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Rhapsodia");
 
 	Camera3D camera = {0};
 	camera.position = (Vector3){5.0f, 1.7f, 0.0f}; // Camera position
@@ -18,27 +16,14 @@ int main()
 	camera.fovy = 60.0f;						   // Camera field-of-view Y
 	camera.projection = CAMERA_PERSPECTIVE;		   // Camera projection type
 
-	Vector3 boxPosition = {0.0f, 0.0f, 0.0f};
+	Mesh testCubeMesh = GenMeshCube(0.1, 0.1, 0.1);
+	Model testCubeModel = LoadModelFromMesh(testCubeMesh);
 
 	DisableCursor();
 	SetTargetFPS(144);
 
 	worldInit();
 
-	Chunk ch;
-	ch.position = (Vector3){1,1,0};
-	fillChunkSmooth(&ch, STONE);
-	Mesh meshChunk = genMeshChunk(ch);
-	Model modelChunk = LoadModelFromMesh(meshChunk);
-
-	Material materialChunk;
-
-	modelChunk.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = LoadTexture("resources/grass.png");
-
-	// Mesh meshBlock = genMeshBlock((Vector3){0,-4,0}, DIRT);
-	// Model modelBlock = LoadModelFromMesh(meshBlock);
-
-	Vector3 position = (Vector3){0,0,0};
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
@@ -48,17 +33,34 @@ int main()
 		ClearBackground(skyColor);
 		BeginMode3D(camera);
 
+		playerUpdate(chunks, camera);
+
+		Vector3 testCubePosition = (Vector3) {
+			camera.position.x,
+			camera.position.y - 1,
+			camera.position.z + 1
+		};
+
+		DrawModel(testCubeModel, testCubePosition, 1, WHITE);
+
 		DrawGrid(10, 1);
-		// DrawModel(modelChunk, position, 1, WHITE);
-		// DrawModel(modelBlock, position, 1, BROWN);
-		drawChunks();
 		DrawCube((Vector3){2, 0, 0}, 2, 0.1, 0.1, RED);
 		DrawCube((Vector3){0, 2, 0}, 0.1, 2, 0.1, GREEN);
 		DrawCube((Vector3){0, 0, 2}, 0.1, 0.1, 2, BLUE);
-		// drawChunks();
+
+		drawChunks();
 
 		EndMode3D();
+
 		DrawFPS(3, 3);
+		DrawRectangle(GetScreenWidth()/2-2, GetScreenHeight()/2-2, 4, 4, WHITE);
+
+		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", (int)testCubePosition.x, (int)testCubePosition.y, (int)testCubePosition.z), 3, 40, 20, WHITE);
+		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]", (int)testCubePosition.x  % 16, (int)testCubePosition.y  % 16, (int)testCubePosition.z  % 16), 3, 60, 20, WHITE);
+		DrawText(TextFormat("Chunk [x: %d, z: %d]", (int)testCubePosition.x / 16, (int)testCubePosition.z /16), 3, 80, 20, WHITE);
+
+		// playerDebugInfo();
+
 		EndDrawing();
 	}
 

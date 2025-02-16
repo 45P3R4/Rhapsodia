@@ -5,7 +5,7 @@
 
 #define SIDE_VERTICES_COUNT 12
 
-enum Block
+enum BlockType
 {
     AIR,
     DIRT,
@@ -14,25 +14,13 @@ enum Block
 };
 
 enum Side {
-    FRONT,
-    BACK,
-    TOP,
-    BOTTOM,
-    LEFT,
-    RIGHT
+    FRONT = 0,  // +Z
+    BACK = 1,   // -Z
+    TOP = 2,    // +Y
+    BOTTOM = 3, // -Y
+    RIGHT = 4,   // +X
+    LEFT = 5   // -X
 };
-
-// +Z front
-// -Z back
-// +Y top
-// -Y botom
-// +X right
-// -X left
-
-
-void DrawBlock(Vector3i position, int block, bool top, bool bottom, bool front, bool back, bool left, bool right);
-
-Mesh genMeshBlock(Vector3 position, int block);
 
 void addFaceVertices(Vector3 position, int side, float* verts, float* normals, float* texturecoords, int* index);
 

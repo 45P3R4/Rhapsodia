@@ -4,12 +4,11 @@
 #include "raylib.h"
 #include "block.h"
 #include "noise.h"
+#include "settings.h"
 
 #include <stdlib.h> //rand
 #include <stdio.h>
 #include <math.h>
-
-#define CHUNK_SIZE 16
 
 typedef struct
 {
@@ -24,10 +23,10 @@ typedef struct
     int height[CHUNK_SIZE][CHUNK_SIZE];
 } heightMap;
 
-void fillChunkSmooth(Chunk* ch, int blockType);
+void fillChunkPerlin(Chunk* ch, int blockType);
 
 void fillChunk(Chunk *ch, int blockType);
 
-Mesh genMeshChunk(Chunk ch);
+Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], int chunkX, int chunkY, int chunkZ);
 
 #endif /* CHUNK */
