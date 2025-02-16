@@ -6,4 +6,4 @@ A block based sandbox game developed with raylib
 * Linux
 
 
-[devlog](devlog)
+[devlog](devlog.md)
