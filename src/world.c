@@ -37,7 +37,9 @@ void drawChunks()
 void updateChunk(int chunkX, int chunkY,  int chunkZ)
 {
     // UnloadMesh(chunks[chunkX][chunkY][chunkZ].mesh);
-    // UnloadModel(chunks[chunkX][chunkY][chunkZ].model);
+    UnloadModel(chunks[chunkX][chunkY][chunkZ].model);
+    UnloadTexture(chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture);
+    // UnloadMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     chunks[chunkX][chunkY][chunkZ].mesh = genMeshChunk(chunks, chunkX, chunkY, chunkZ);
     chunks[chunkX][chunkY][chunkZ].model = LoadModelFromMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture = LoadTexture("resources/test.png");
@@ -47,6 +49,14 @@ void deleteBlock(Vector3i chunkIndex, Vector3i blockIndex)
 {
     chunks[(int)chunkIndex.x][(int)chunkIndex.y][(int)chunkIndex.z]
     .blocks[(int)blockIndex.x][(int)blockIndex.y][(int)blockIndex.z] = AIR;
+
+    updateChunk((int)chunkIndex.x, (int)chunkIndex.y, (int)chunkIndex.z);
+}
+
+void placeBlock(Vector3i chunkIndex, Vector3i blockIndex, int blockType)
+{
+    chunks[(int)chunkIndex.x][(int)chunkIndex.y][(int)chunkIndex.z]
+    .blocks[(int)blockIndex.x][(int)blockIndex.y][(int)blockIndex.z] = blockType;
 
     updateChunk((int)chunkIndex.x, (int)chunkIndex.y, (int)chunkIndex.z);
 }

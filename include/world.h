@@ -17,4 +17,6 @@ void updateChunk(int chunkX, int chunkY, int chunkZ);
 
 void deleteBlock(Vector3i chunkIndex, Vector3i blockIndex);
 
+void placeBlock(Vector3i chunkIndex, Vector3i blockIndex, int blockType);
+
 #endif /* WORLD */
