@@ -23,7 +23,7 @@ typedef struct
     int height[CHUNK_SIZE][CHUNK_SIZE];
 } heightMap;
 
-void fillChunkSmooth(Chunk* ch, int blockType);
+void fillChunkPerlin(Chunk* ch, int blockType);
 
 void fillChunk(Chunk *ch, int blockType);
 

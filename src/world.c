@@ -14,7 +14,7 @@ void worldInit()
         int z = i / (CHUNKS_COUNT * CHUNKS_COUNT);
 
         chunks[x][y][z].position = (Vector3){x*CHUNK_SIZE, y*CHUNK_SIZE, z*CHUNK_SIZE};
-        fillChunkSmooth(&(chunks[x][y][z]), STONE);
+        fillChunkPerlin(&(chunks[x][y][z]), STONE);
         
         chunks[x][y][z].mesh = genMeshChunk(chunks, x, y, z);
         chunks[x][y][z].model = LoadModelFromMesh(chunks[x][y][z].mesh);

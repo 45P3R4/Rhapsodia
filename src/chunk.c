@@ -6,7 +6,7 @@
 
 int getRandomBlockType() { return (rand() % (TYPES_COUNT-1)) + 1; }
 
-void fillChunkSmooth(Chunk* ch, int blockType)
+void fillChunkPerlin(Chunk* ch, int blockType)
 {
     heightMap noiseMap;
 
@@ -16,9 +16,9 @@ void fillChunkSmooth(Chunk* ch, int blockType)
         int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
         int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
-        noiseMap.height[x][z] = (int)(pnoise2d(x + ch->position.x, z + ch->position.z, 4, 5, 0)/50) + 3;
+        noiseMap.height[x][z] = (int)(pnoise2d(x + ch->position.x, z + ch->position.z, 4, 5, 0)/20) + 3;
 
-        if(y < noiseMap.height[x][z] && ch->position.y < 16)
+        if(y + ch->position.y < noiseMap.height[x][z])
             ch->blocks[x][y][z] = blockType;
         else
             ch->blocks[x][y][z] = AIR;
