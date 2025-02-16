@@ -14,12 +14,12 @@ enum BlockType
 };
 
 enum Side {
-    FRONT = 0,  // +Z
-    BACK = 1,   // -Z
-    TOP = 2,    // +Y
-    BOTTOM = 3, // -Y
-    RIGHT = 4,   // +X
-    LEFT = 5   // -X
+    RIGHT = 0,   // +X
+    LEFT = 1,    // -X
+    TOP = 2,     // +Y
+    BOTTOM = 3,  // -Y
+    FORWARD = 4, // +Z
+    BACK = 5     // -Z
 };
 
 void addFaceVertices(Vector3 position, int side, float* verts, float* normals, float* texturecoords, int* index);

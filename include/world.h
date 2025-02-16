@@ -2,6 +2,7 @@
 #define WORLD
 
 #include "raylib.h"
+#include "utils.h"
 #include "settings.h"
 #include "chunk.h"
 
@@ -14,6 +15,6 @@ void drawChunks();
 
 void updateChunk(int chunkX, int chunkY, int chunkZ);
 
-void deleteBlock(int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ);
+void deleteBlock(Vector3i chunkIndex, Vector3i blockIndex);
 
 #endif /* WORLD */

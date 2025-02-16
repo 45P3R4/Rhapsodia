@@ -3,6 +3,7 @@
 
 #include "raylib.h"
 #include "settings.h"
+#include "utils.h"
 #include "chunk.h"
 #include "world.h"
 

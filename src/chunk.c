@@ -59,49 +59,46 @@ Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], int chunkX, int 
         int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
         int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
-        Vector3 blockPosition = (Vector3){
-            (float)x + ch[chunkX][chunkY][chunkZ].position.x,  
-            (float)y + ch[chunkX][chunkY][chunkZ].position.y, 
-            (float)z + ch[chunkX][chunkY][chunkZ].position.z};
+        Vector3 blockPosition = (Vector3){(float)x, (float)y, (float)z};
 
         bool blockIsNotAir = ch[chunkX][chunkY][chunkZ].blocks[x][y][z] != AIR;
 
-        bool topIsAir    = ch[chunkX][chunkY][chunkZ].blocks[x][y+1][z] == AIR;
-        bool bottomIsAir = ch[chunkX][chunkY][chunkZ].blocks[x][y-1][z] == AIR;
-        bool frontIsAir  = ch[chunkX][chunkY][chunkZ].blocks[x][y][z+1] == AIR;
-        bool backIsAir   = ch[chunkX][chunkY][chunkZ].blocks[x][y][z-1] == AIR;
         bool rightIsAir  = ch[chunkX][chunkY][chunkZ].blocks[x+1][y][z] == AIR;
         bool leftIsAir   = ch[chunkX][chunkY][chunkZ].blocks[x-1][y][z] == AIR;
+        bool frontIsAir  = ch[chunkX][chunkY][chunkZ].blocks[x][y][z+1] == AIR;
+        bool backIsAir   = ch[chunkX][chunkY][chunkZ].blocks[x][y][z-1] == AIR;
+        bool topIsAir    = ch[chunkX][chunkY][chunkZ].blocks[x][y+1][z] == AIR;
+        bool bottomIsAir = ch[chunkX][chunkY][chunkZ].blocks[x][y-1][z] == AIR;
 
-        bool lastBlockZ = (z >= CHUNK_SIZE-1);
-        bool lastBlockY = (y >= CHUNK_SIZE-1);
         bool lastBlockX = (x >= CHUNK_SIZE-1);
+        bool lastBlockY = (y >= CHUNK_SIZE-1);
+        bool lastBlockZ = (z >= CHUNK_SIZE-1);
 
-        bool firstBlockZ = (z <= 0);
-        bool firstBlockY = (y <= 0);
         bool firstBlockX = (x <= 0);
+        bool firstBlockY = (y <= 0);
+        bool firstBlockZ = (z <= 0);
 
-        if (lastBlockZ)
-            frontIsAir = false;
-        if (lastBlockY)
-            topIsAir = false;
         if (lastBlockX)
             rightIsAir = false;
+        if (lastBlockY)
+            topIsAir = false;
+        if (lastBlockZ)
+            frontIsAir = false;
 
-        if (firstBlockZ)
-            backIsAir = false;
-        if (firstBlockY)
-            bottomIsAir = false;
         if (firstBlockX)
             leftIsAir = false;
+        if (firstBlockY)
+            bottomIsAir = false;
+        if (firstBlockZ)
+            backIsAir = false;
 
         bool isDrawingSide[6] = {
-        (blockIsNotAir && frontIsAir), //front
-        (blockIsNotAir && backIsAir), //back
-        (blockIsNotAir && topIsAir), //top
-        (blockIsNotAir && bottomIsAir), //bottom
-        (blockIsNotAir && rightIsAir), //right
-        (blockIsNotAir && leftIsAir)}; //left
+            (blockIsNotAir && rightIsAir), //right
+            (blockIsNotAir && leftIsAir), //left
+            (blockIsNotAir && topIsAir), //top
+            (blockIsNotAir && bottomIsAir), //bottom
+            (blockIsNotAir && frontIsAir), //front
+            (blockIsNotAir && backIsAir)}; //back
 
         for (int k = 0; k < 6; k++)
             if (isDrawingSide[k])
