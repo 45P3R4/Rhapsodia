@@ -30,26 +30,33 @@ void drawChunks()
         int y = (i / CHUNKS_COUNT) % CHUNKS_COUNT;
         int z = i / (CHUNKS_COUNT * CHUNKS_COUNT);
 
-        DrawModel(chunks[x][y][z].model, (Vector3){0,0,0}, 1, WHITE);
+        DrawModel(chunks[x][y][z].model, chunks[x][y][z].position, 1, WHITE);
     }
 }
 
 void updateChunk(int chunkX, int chunkY,  int chunkZ)
 {
-    printf("\nupdate: [x: %d, z: %d]\n", chunkX, chunkZ);
     // UnloadMesh(chunks[chunkX][chunkY][chunkZ].mesh);
-    // UnloadModel(chunks[chunkX][chunkY][chunkZ].model);
-
+    UnloadModel(chunks[chunkX][chunkY][chunkZ].model);
+    UnloadTexture(chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture);
+    // UnloadMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     chunks[chunkX][chunkY][chunkZ].mesh = genMeshChunk(chunks, chunkX, chunkY, chunkZ);
     chunks[chunkX][chunkY][chunkZ].model = LoadModelFromMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture = LoadTexture("resources/test.png");
 }
 
-void deleteBlock(int chunkX, int chunkY, int chunkZ, int blockX, int blockY, int blockZ)
+void deleteBlock(Vector3i chunkIndex, Vector3i blockIndex)
 {
-    printf("\ndelete on:\n\tchunk:[%d, %d, %d]\n\tblock:[%d, %d, %d]\n", chunkX, chunkY, chunkZ, blockX, blockY, blockZ);
-    printf("block: %d\n", chunks[chunkX][chunkY][chunkZ].blocks[blockX][blockY][blockZ]);
-    chunks[chunkX][chunkY][chunkZ].blocks[blockX][blockY][blockZ] = AIR;
-    printf("block after: %d\n", chunks[chunkX][chunkY][chunkZ].blocks[blockX][blockY][blockZ]);
-    updateChunk(chunkX, chunkY, chunkZ);
+    chunks[(int)chunkIndex.x][(int)chunkIndex.y][(int)chunkIndex.z]
+    .blocks[(int)blockIndex.x][(int)blockIndex.y][(int)blockIndex.z] = AIR;
+
+    updateChunk((int)chunkIndex.x, (int)chunkIndex.y, (int)chunkIndex.z);
+}
+
+void placeBlock(Vector3i chunkIndex, Vector3i blockIndex, int blockType)
+{
+    chunks[(int)chunkIndex.x][(int)chunkIndex.y][(int)chunkIndex.z]
+    .blocks[(int)blockIndex.x][(int)blockIndex.y][(int)blockIndex.z] = blockType;
+
+    updateChunk((int)chunkIndex.x, (int)chunkIndex.y, (int)chunkIndex.z);
 }

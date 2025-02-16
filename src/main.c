@@ -35,14 +35,6 @@ int main()
 
 		playerUpdate(chunks, camera);
 
-		Vector3 testCubePosition = (Vector3) {
-			camera.position.x,
-			camera.position.y - 1,
-			camera.position.z + 1
-		};
-
-		DrawModel(testCubeModel, testCubePosition, 1, WHITE);
-
 		DrawGrid(10, 1);
 		DrawCube((Vector3){2, 0, 0}, 2, 0.1, 0.1, RED);
 		DrawCube((Vector3){0, 2, 0}, 0.1, 2, 0.1, GREEN);
@@ -55,11 +47,9 @@ int main()
 		DrawFPS(3, 3);
 		DrawRectangle(GetScreenWidth()/2-2, GetScreenHeight()/2-2, 4, 4, WHITE);
 
-		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", (int)testCubePosition.x, (int)testCubePosition.y, (int)testCubePosition.z), 3, 40, 20, WHITE);
-		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]", (int)testCubePosition.x  % 16, (int)testCubePosition.y  % 16, (int)testCubePosition.z  % 16), 3, 60, 20, WHITE);
-		DrawText(TextFormat("Chunk [x: %d, z: %d]", (int)testCubePosition.x / 16, (int)testCubePosition.z /16), 3, 80, 20, WHITE);
-
-		// playerDebugInfo();
+		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", (int)camera.position.x, (int)camera.position.y, (int)camera.position.z), 3, 40, 20, WHITE);
+		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]", (int)camera.position.x  % 16, (int)camera.position.y  % 16, (int)camera.position.z  % 16), 3, 60, 20, WHITE);
+		DrawText(TextFormat("Chunk [x: %d, z: %d]", (int)camera.position.x / 16, (int)camera.position.z /16), 3, 80, 20, WHITE);
 
 		EndDrawing();
 	}
