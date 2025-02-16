@@ -3,7 +3,7 @@
 
 Color skyColor = (Color){135, 206, 235, 255};
 
-Chunk chunks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+Chunk chunks[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT];
 	
 void worldInit()
 {

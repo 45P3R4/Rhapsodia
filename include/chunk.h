@@ -27,6 +27,6 @@ void fillChunkPerlin(Chunk* ch, int blockType);
 
 void fillChunk(Chunk *ch, int blockType);
 
-Mesh genMeshChunk(Chunk ch[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], int chunkX, int chunkY, int chunkZ);
+Mesh genMeshChunk(Chunk ch[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT], int chunkX, int chunkY, int chunkZ);
 
 #endif /* CHUNK */

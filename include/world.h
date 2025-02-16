@@ -7,7 +7,7 @@
 #include "chunk.h"
 
 extern Color skyColor;
-extern Chunk chunks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+extern Chunk chunks[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT];
 
 void worldInit();
 
