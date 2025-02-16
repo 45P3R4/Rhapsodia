@@ -16,14 +16,13 @@ void fillChunkSmooth(Chunk* ch, int blockType)
         int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
         int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
-        noiseMap.height[x][z] = floor(pnoise2d(x + ch->position.x, z + ch->position.z, 4, 5, 0)/50) + 3;
+        noiseMap.height[x][z] = (int)(pnoise2d(x + ch->position.x, z + ch->position.z, 4, 5, 0)/50) + 3;
 
-        if(y < noiseMap.height[x][z])
+        if(y < noiseMap.height[x][z] && ch->position.y < 16)
             ch->blocks[x][y][z] = blockType;
         else
             ch->blocks[x][y][z] = AIR;
     }
-    printf("filled");
 }
 
 void fillChunk(Chunk *ch, int blockType)
