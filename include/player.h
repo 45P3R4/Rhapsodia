@@ -14,8 +14,8 @@ typedef struct
     Vector3 size;
 } Player;
 
-void playerUpdate(Chunk ch[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT], Camera3D camera);
+void playerUpdate(Camera3D camera);
 
-void playerDebugInfo();
+void playerDrawBlockMarker();
 
 #endif /* PLAYER */

@@ -14,15 +14,11 @@
 typedef struct
 {
     Vector3 position;
+    int height[CHUNK_SIZE][CHUNK_SIZE];
     int blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     Mesh mesh;
     Model model;
 } Chunk;
-
-typedef struct
-{
-    int height[CHUNK_SIZE][CHUNK_SIZE];
-} heightMap;
 
 void fillChunkPerlin(Chunk* ch, int blockType);
 

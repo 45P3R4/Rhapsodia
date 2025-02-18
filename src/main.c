@@ -33,7 +33,7 @@ int main()
 		ClearBackground(skyColor);
 		BeginMode3D(camera);
 
-		playerUpdate(chunks, camera);
+		playerUpdate(camera);
 
 		DrawGrid(10, 1);
 		DrawCube((Vector3){2, 0, 0}, 2, 0.1, 0.1, RED);
@@ -56,10 +56,10 @@ int main()
 			(int)camera.position.x  % 16, 
 			(int)camera.position.y  % 16, 
 			(int)camera.position.z  % 16, 
-			chunks
-				[((int)camera.position.x  / 16)]
-				[((int)camera.position.y  / 16)]
-				[((int)camera.position.z  / 16)]
+			getChunk(
+				((int)camera.position.x  / 16),
+				((int)camera.position.y  / 16),
+				((int)camera.position.z  / 16))
 			.blocks
 				[((int)camera.position.x  % 16)]
 				[((int)camera.position.y  % 16)]

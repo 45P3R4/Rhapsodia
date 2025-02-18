@@ -20,8 +20,6 @@ void worldInit()
         chunks[x][y][z].model = LoadModelFromMesh(chunks[x][y][z].mesh);
         chunks[x][y][z].model.materials[0].maps->texture = LoadTexture("resources/test.png");
     }
-
-    printf("\n\nworld\n[0,15,0]: %d\n[0,0,0]: %d\n", chunks[0][0][0].blocks[0][15][0], chunks[0][1][0].blocks[0][0][0]);
 }
 
 void drawChunks()
@@ -41,7 +39,6 @@ void updateChunk(int chunkX, int chunkY,  int chunkZ)
     // UnloadMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     UnloadModel(chunks[chunkX][chunkY][chunkZ].model);
     UnloadTexture(chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture);
-    // UnloadMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     chunks[chunkX][chunkY][chunkZ].mesh = genMeshChunk((Vector3i){chunkX, chunkY, chunkZ});
     chunks[chunkX][chunkY][chunkZ].model = LoadModelFromMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture = LoadTexture("resources/test.png");
@@ -61,4 +58,9 @@ void placeBlock(Vector3i chunkIndex, Vector3i blockIndex, int blockType)
     .blocks[(int)blockIndex.x][(int)blockIndex.y][(int)blockIndex.z] = blockType;
 
     updateChunk((int)chunkIndex.x, (int)chunkIndex.y, (int)chunkIndex.z);
+}
+
+Chunk getChunk(int x, int y, int z)
+{
+    return chunks[x][y][z];
 }

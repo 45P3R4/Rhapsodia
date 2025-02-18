@@ -8,7 +8,7 @@ int getRandomBlockType() { return (rand() % (TYPES_COUNT-1)) + 1; }
 
 void fillChunkPerlin(Chunk* ch, int blockType)
 {
-    heightMap noiseMap;
+    int noiseMap[CHUNK_SIZE][CHUNK_SIZE];
 
     for (int i = 0; i < pow(CHUNK_SIZE, 3); i++)
     {
@@ -16,9 +16,9 @@ void fillChunkPerlin(Chunk* ch, int blockType)
         int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
         int z = i / (CHUNK_SIZE * CHUNK_SIZE);
 
-        noiseMap.height[x][z] = (int)(pnoise2d(x + ch->position.x, z + ch->position.z, 4, 5, 0)/20) + 3;
+        noiseMap[x][z] = (int)(pnoise2d(x + ch->position.x, z + ch->position.z, 4, 5, 0)/20) + 3;
 
-        if(y + ch->position.y < noiseMap.height[x][z])
+        if(y + ch->position.y < noiseMap[x][z])
             ch->blocks[x][y][z] = blockType;
         else
             ch->blocks[x][y][z] = AIR;
@@ -61,14 +61,16 @@ Mesh genMeshChunk(Vector3i chunkIndex)
 
         Vector3 blockPosition = (Vector3){(float)x, (float)y, (float)z};
 
-        bool blockIsNotAir = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y][z] != AIR;
+        Chunk currentChunk = getChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z);
 
-        bool rightIsAir  = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x+1][y][z] == AIR;
-        bool leftIsAir   = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x-1][y][z] == AIR;
-        bool topIsAir    = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y+1][z] == AIR;
-        bool bottomIsAir = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y-1][z] == AIR;
-        bool frontIsAir  = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y][z+1] == AIR;
-        bool backIsAir   = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y][z-1] == AIR;
+        bool blockIsNotAir = currentChunk.blocks[x][y][z] != AIR;
+
+        bool rightIsAir  = currentChunk.blocks[x+1][y][z] == AIR;
+        bool leftIsAir   = currentChunk.blocks[x-1][y][z] == AIR;
+        bool topIsAir    = currentChunk.blocks[x][y+1][z] == AIR;
+        bool bottomIsAir = currentChunk.blocks[x][y-1][z] == AIR;
+        bool frontIsAir  = currentChunk.blocks[x][y][z+1] == AIR;
+        bool backIsAir   = currentChunk.blocks[x][y][z-1] == AIR;
 
         bool lastBlockX = (x >= CHUNK_SIZE-1);
         bool lastBlockY = (y >= CHUNK_SIZE-1);
@@ -79,18 +81,23 @@ Mesh genMeshChunk(Vector3i chunkIndex)
         bool firstBlockZ = (z <= 0);
 
         if (lastBlockX)
-                rightIsAir = false;
+        {
+                rightIsAir = true;
+        }
 
         if (lastBlockY)
         {
-            if (chunkIndex.x >= CHUNK_SIZE-1)
-                topIsAir = true;
+            if (chunkIndex.y < CHUNK_SIZE)
+                topIsAir = getChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z).blocks[x][0][z] == AIR;
             else
-                topIsAir = chunks[chunkIndex.x][(chunkIndex.y+1)][chunkIndex.z].blocks[x][0][z] == AIR;
+                topIsAir = true;
         }
 
         if (lastBlockZ)
-            frontIsAir = false;
+        {
+                frontIsAir = true;
+        }
+
 
         if (firstBlockX)
             leftIsAir = false;
