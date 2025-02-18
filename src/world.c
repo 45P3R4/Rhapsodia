@@ -3,15 +3,17 @@
 
 Color skyColor = (Color){135, 206, 235, 255};
 
-Chunk chunks[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT];
+Chunk chunks[CHUNKS_COUNT_X][CHUNKS_COUNT_Y][CHUNKS_COUNT_Z];
 	
 void worldInit()
 {
-    for (int i = 0; i < pow(CHUNKS_COUNT, 3); i++)
+    int totalChunks = CHUNKS_COUNT_X * CHUNKS_COUNT_Y * CHUNKS_COUNT_Z;
+
+    for (int i = 0; i < totalChunks; i++) 
     {
-        int x = i % CHUNKS_COUNT;
-        int y = (i / CHUNKS_COUNT) % CHUNKS_COUNT;
-        int z = i / (CHUNKS_COUNT * CHUNKS_COUNT);
+        int x = i / (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z);  // вычисляем индекс по оси X
+        int y = (i % (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z)) / CHUNKS_COUNT_Z;  // вычисляем индекс по оси Y
+        int z = i % CHUNKS_COUNT_Z;  // вычисляем индекс по оси Z
 
         chunks[x][y][z].position = (Vector3){x*CHUNK_SIZE, y*CHUNK_SIZE, z*CHUNK_SIZE};
         fillChunkPerlin(&(chunks[x][y][z]), STONE);
@@ -24,11 +26,13 @@ void worldInit()
 
 void drawChunks()
 {
-    for (int i = 0; i < pow(CHUNKS_COUNT, 3); i++)
+    int totalChunks = CHUNKS_COUNT_X * CHUNKS_COUNT_Y * CHUNKS_COUNT_Z;
+    
+    for (int i = 0; i < totalChunks; i++) 
     {
-        int x = i % CHUNKS_COUNT;
-        int y = (i / CHUNKS_COUNT) % CHUNKS_COUNT;
-        int z = i / (CHUNKS_COUNT * CHUNKS_COUNT);
+        int x = i / (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z);  // вычисляем индекс по оси X
+        int y = (i % (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z)) / CHUNKS_COUNT_Z;  // вычисляем индекс по оси Y
+        int z = i % CHUNKS_COUNT_Z;  // вычисляем индекс по оси Z
 
         DrawModel(chunks[x][y][z].model, chunks[x][y][z].position, 1, WHITE);
     }

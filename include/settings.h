@@ -4,7 +4,11 @@
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 
-#define CHUNKS_COUNT 2
+#define CHUNKS_COUNT_X 3
+#define CHUNKS_COUNT_Y 2
+#define CHUNKS_COUNT_Z 3
+
+#define CHUNKS_COUNT 4*4*4
 
 #define CHUNK_SIZE 16
 

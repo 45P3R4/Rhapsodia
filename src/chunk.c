@@ -87,7 +87,7 @@ Mesh genMeshChunk(Vector3i chunkIndex)
 
         if (lastBlockY)
         {
-            if (chunkIndex.y < CHUNK_SIZE)
+            if (chunkIndex.y < CHUNK_SIZE-1)
                 topIsAir = getChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z).blocks[x][0][z] == AIR;
             else
                 topIsAir = true;

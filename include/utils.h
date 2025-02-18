@@ -9,7 +9,6 @@ typedef struct Vector3i {
     int z;
 } Vector3i;
 
-
 // Vector3i addVector3i(Vector3i vector, Vector3i additionalVector)
 // {
 //     Vector3i newVector = {
