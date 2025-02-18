@@ -3,6 +3,32 @@
 #include "world.h"
 #include "player.h"
 
+void drawDebugtext(Camera3D camera)
+{
+	DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", 
+		(int)camera.position.x, 
+		(int)camera.position.y, 
+		(int)camera.position.z), 3, 40, 20, WHITE);
+
+	DrawText(TextFormat("Block [x: %d, y: %d, z: %d]: %d", 
+		(int)camera.position.x  % 16, 
+		(int)camera.position.y  % 16, 
+		(int)camera.position.z  % 16, 
+		getChunk(
+			((int)camera.position.x  / 16),
+			((int)camera.position.y  / 16),
+			((int)camera.position.z  / 16))
+		.blocks
+			[((int)camera.position.x  % 16)]
+			[((int)camera.position.y  % 16)]
+			[((int)camera.position.z  % 16)]), 3, 60, 20, WHITE);
+
+	DrawText(TextFormat("Chunk [x: %d, y: %d, z: %d]", 
+		(int)camera.position.x / 16, 
+		(int)camera.position.y / 16,
+		(int)camera.position.z /16), 3, 80, 20, WHITE);
+}
+
 int main()
 {
 	SetConfigFlags(FLAG_VSYNC_HINT | FLAG_WINDOW_HIGHDPI | FLAG_WINDOW_RESIZABLE);
@@ -47,28 +73,7 @@ int main()
 		DrawFPS(3, 3);
 		DrawRectangle(GetScreenWidth()/2-2, GetScreenHeight()/2-2, 4, 4, WHITE);
 
-		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", 
-			(int)camera.position.x, 
-			(int)camera.position.y, 
-			(int)camera.position.z), 3, 40, 20, WHITE);
-
-		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]: %d", 
-			(int)camera.position.x  % 16, 
-			(int)camera.position.y  % 16, 
-			(int)camera.position.z  % 16, 
-			getChunk(
-				((int)camera.position.x  / 16),
-				((int)camera.position.y  / 16),
-				((int)camera.position.z  / 16))
-			.blocks
-				[((int)camera.position.x  % 16)]
-				[((int)camera.position.y  % 16)]
-				[((int)camera.position.z  % 16)]), 3, 60, 20, WHITE);
-
-		DrawText(TextFormat("Chunk [x: %d, y: %d, z: %d]", 
-			(int)camera.position.x / 16, 
-			(int)camera.position.y / 16,
-			(int)camera.position.z /16), 3, 80, 20, WHITE);
+		drawDebugtext(camera);
 
 		EndDrawing();
 	}
