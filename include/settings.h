@@ -8,4 +8,6 @@
 
 #define CHUNK_SIZE 16
 
+#define INTERACT_DISTANCE 5
+
 #endif /* SETTINGS */

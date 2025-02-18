@@ -5,6 +5,7 @@
 #include "block.h"
 #include "noise.h"
 #include "settings.h"
+#include "utils.h"
 
 #include <stdlib.h> //rand
 #include <stdio.h>
@@ -27,6 +28,6 @@ void fillChunkPerlin(Chunk* ch, int blockType);
 
 void fillChunk(Chunk *ch, int blockType);
 
-Mesh genMeshChunk(Chunk ch[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT], int chunkX, int chunkY, int chunkZ);
+Mesh genMeshChunk(Vector3i chunkIndex);
 
 #endif /* CHUNK */

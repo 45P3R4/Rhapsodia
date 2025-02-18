@@ -34,6 +34,16 @@ void playerUpdate(Chunk ch[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT], Camera3D c
 
     Chunk currentChunk = ch[chunkIndex.x][chunkIndex.y][chunkIndex.z];
 
+    Chunk closestChunks[7] = {
+        ch[chunkIndex.x][chunkIndex.y][chunkIndex.z],
+        ch[chunkIndex.x+1][chunkIndex.y][chunkIndex.z],
+        ch[chunkIndex.x-1][chunkIndex.y][chunkIndex.z],
+        ch[chunkIndex.x][chunkIndex.y+1][chunkIndex.z],
+        ch[chunkIndex.x][chunkIndex.y-1][chunkIndex.z],
+        ch[chunkIndex.x][chunkIndex.y][chunkIndex.z+1],
+        ch[chunkIndex.x][chunkIndex.y][chunkIndex.z-1],
+    };
+
     collision = GetRayCollisionMesh(ray, 
         currentChunk.mesh,
         MatrixTranslate(currentChunk.position.x, currentChunk.position.y, currentChunk.position.z));
@@ -46,24 +56,59 @@ void playerUpdate(Chunk ch[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT], Camera3D c
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
-        Vector3i breakPos = {
-            (int)(collision.point.x - (collision.normal.x * 0.5))+0.5,
-            (int)(collision.point.y - (collision.normal.y * 0.5))+0.5,
-            (int)(collision.point.z - (collision.normal.z * 0.5))+0.5 };
+        RayCollision collisionBrake = { 0 };
+        
+        for (int i = 0; i < 7; i++)
+        {
+            if (!collisionBrake.hit && collisionBrake.distance < INTERACT_DISTANCE)
+            {
+                collisionBrake = GetRayCollisionMesh(ray, 
+                    currentChunk.mesh,
+                    MatrixTranslate(closestChunks[i].position.x, closestChunks[i].position.y, closestChunks[i].position.z));
 
-            printf("destroy at: [%d, %d, %d]", breakPos.x, breakPos.y, breakPos.z);
+                    printf("break %d\n", i);
+            }
+            else
+            {
+                Vector3i breakPos = {
+                    (int)(collisionBrake.point.x - (collisionBrake.normal.x * 0.5)) % CHUNK_SIZE,
+                    (int)(collisionBrake.point.y - (collisionBrake.normal.y * 0.5)) % CHUNK_SIZE,
+                    (int)(collisionBrake.point.z - (collisionBrake.normal.z * 0.5)) % CHUNK_SIZE };
 
-        deleteBlock(chunkIndex, breakPos);
+                printf("break at: [%d, %d, %d] %d\n", breakPos.x, breakPos.y, breakPos.z, i);
+                deleteBlock(chunkIndex, breakPos);
+                
+                break;
+            }
+        }
+        collisionBrake.hit = false;
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
     {
-        Vector3i placePos = {
-            (int)(collision.point.x + (collision.normal.x * 0.5))+0.5,
-            (int)(collision.point.y + (collision.normal.y * 0.5))+0.5,
-            (int)(collision.point.z + (collision.normal.z * 0.5))+0.5 };
+        RayCollision collisionPlace = { 0 };
+        
+        for (int i = 0; i < 7; i++)
+        {
+            if (!collisionPlace.hit && collisionPlace.distance < INTERACT_DISTANCE)
+            {
+                collisionPlace = GetRayCollisionMesh(ray, 
+                    currentChunk.mesh,
+                    MatrixTranslate(closestChunks[i].position.x, closestChunks[i].position.y, closestChunks[i].position.z));
+            }
+            else
+            {
+                Vector3i placePos = {
+                    (int)(collisionPlace.point.x + (collisionPlace.normal.x * 0.5)) % CHUNK_SIZE,
+                    (int)(collisionPlace.point.y + (collisionPlace.normal.y * 0.5)) % CHUNK_SIZE,
+                    (int)(collisionPlace.point.z + (collisionPlace.normal.z * 0.5)) % CHUNK_SIZE };
 
-        placeBlock(chunkIndex, placePos, STONE);
+                printf("place at: [%d, %d, %d]", placePos.x, placePos.y, placePos.z);
+                placeBlock(chunkIndex, placePos, STONE);
+                break;
+            }
+        }
+        collisionPlace.hit = !collisionPlace.hit;
     }
 
     playerDebugDraw();

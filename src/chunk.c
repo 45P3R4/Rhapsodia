@@ -1,6 +1,6 @@
 #include <mem.h>
 #include "chunk.h"
-#include "settings.h"
+#include "world.h"
 
 #define MAX_MESH_VBO 7
 
@@ -38,7 +38,7 @@ void fillChunk(Chunk *ch, int blockType)
 }
 
 
-Mesh genMeshChunk(Chunk ch[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT], int chunkX, int chunkY, int chunkZ)
+Mesh genMeshChunk(Vector3i chunkIndex)
 {
     Mesh mesh = {0};
     mesh.vboId = (unsigned int *)RL_CALLOC(MAX_MESH_VBO, sizeof(unsigned int));
@@ -61,14 +61,14 @@ Mesh genMeshChunk(Chunk ch[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT], int chunkX
 
         Vector3 blockPosition = (Vector3){(float)x, (float)y, (float)z};
 
-        bool blockIsNotAir = ch[chunkX][chunkY][chunkZ].blocks[x][y][z] != AIR;
+        bool blockIsNotAir = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y][z] != AIR;
 
-        bool rightIsAir  = ch[chunkX][chunkY][chunkZ].blocks[x+1][y][z] == AIR;
-        bool leftIsAir   = ch[chunkX][chunkY][chunkZ].blocks[x-1][y][z] == AIR;
-        bool frontIsAir  = ch[chunkX][chunkY][chunkZ].blocks[x][y][z+1] == AIR;
-        bool backIsAir   = ch[chunkX][chunkY][chunkZ].blocks[x][y][z-1] == AIR;
-        bool topIsAir    = ch[chunkX][chunkY][chunkZ].blocks[x][y+1][z] == AIR;
-        bool bottomIsAir = ch[chunkX][chunkY][chunkZ].blocks[x][y-1][z] == AIR;
+        bool rightIsAir  = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x+1][y][z] == AIR;
+        bool leftIsAir   = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x-1][y][z] == AIR;
+        bool topIsAir    = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y+1][z] == AIR;
+        bool bottomIsAir = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y-1][z] == AIR;
+        bool frontIsAir  = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y][z+1] == AIR;
+        bool backIsAir   = chunks[chunkIndex.x][chunkIndex.y][chunkIndex.z].blocks[x][y][z-1] == AIR;
 
         bool lastBlockX = (x >= CHUNK_SIZE-1);
         bool lastBlockY = (y >= CHUNK_SIZE-1);
@@ -79,16 +79,25 @@ Mesh genMeshChunk(Chunk ch[CHUNKS_COUNT][CHUNKS_COUNT][CHUNKS_COUNT], int chunkX
         bool firstBlockZ = (z <= 0);
 
         if (lastBlockX)
-            rightIsAir = false;
+                rightIsAir = false;
+
         if (lastBlockY)
-            topIsAir = false;
+        {
+            if (chunkIndex.x >= CHUNK_SIZE-1)
+                topIsAir = true;
+            else
+                topIsAir = chunks[chunkIndex.x][(chunkIndex.y+1)][chunkIndex.z].blocks[x][0][z] == AIR;
+        }
+
         if (lastBlockZ)
             frontIsAir = false;
 
         if (firstBlockX)
             leftIsAir = false;
+
         if (firstBlockY)
             bottomIsAir = false;
+
         if (firstBlockZ)
             backIsAir = false;
 

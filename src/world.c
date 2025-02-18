@@ -16,10 +16,12 @@ void worldInit()
         chunks[x][y][z].position = (Vector3){x*CHUNK_SIZE, y*CHUNK_SIZE, z*CHUNK_SIZE};
         fillChunkPerlin(&(chunks[x][y][z]), STONE);
         
-        chunks[x][y][z].mesh = genMeshChunk(chunks, x, y, z);
+        chunks[x][y][z].mesh = genMeshChunk((Vector3i){x, y, z});
         chunks[x][y][z].model = LoadModelFromMesh(chunks[x][y][z].mesh);
         chunks[x][y][z].model.materials[0].maps->texture = LoadTexture("resources/test.png");
     }
+
+    printf("\n\nworld\n[0,15,0]: %d\n[0,0,0]: %d\n", chunks[0][0][0].blocks[0][15][0], chunks[0][1][0].blocks[0][0][0]);
 }
 
 void drawChunks()
@@ -40,7 +42,7 @@ void updateChunk(int chunkX, int chunkY,  int chunkZ)
     UnloadModel(chunks[chunkX][chunkY][chunkZ].model);
     UnloadTexture(chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture);
     // UnloadMesh(chunks[chunkX][chunkY][chunkZ].mesh);
-    chunks[chunkX][chunkY][chunkZ].mesh = genMeshChunk(chunks, chunkX, chunkY, chunkZ);
+    chunks[chunkX][chunkY][chunkZ].mesh = genMeshChunk((Vector3i){chunkX, chunkY, chunkZ});
     chunks[chunkX][chunkY][chunkZ].model = LoadModelFromMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture = LoadTexture("resources/test.png");
 }

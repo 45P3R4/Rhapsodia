@@ -47,9 +47,28 @@ int main()
 		DrawFPS(3, 3);
 		DrawRectangle(GetScreenWidth()/2-2, GetScreenHeight()/2-2, 4, 4, WHITE);
 
-		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", (int)camera.position.x, (int)camera.position.y, (int)camera.position.z), 3, 40, 20, WHITE);
-		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]", (int)camera.position.x  % 16, (int)camera.position.y  % 16, (int)camera.position.z  % 16), 3, 60, 20, WHITE);
-		DrawText(TextFormat("Chunk [x: %d, z: %d]", (int)camera.position.x / 16, (int)camera.position.z /16), 3, 80, 20, WHITE);
+		DrawText(TextFormat("Position [x: %d, y: %d, z: %d]", 
+			(int)camera.position.x, 
+			(int)camera.position.y, 
+			(int)camera.position.z), 3, 40, 20, WHITE);
+
+		DrawText(TextFormat("Block [x: %d, y: %d, z: %d]: %d", 
+			(int)camera.position.x  % 16, 
+			(int)camera.position.y  % 16, 
+			(int)camera.position.z  % 16, 
+			chunks
+				[((int)camera.position.x  / 16)]
+				[((int)camera.position.y  / 16)]
+				[((int)camera.position.z  / 16)]
+			.blocks
+				[((int)camera.position.x  % 16)]
+				[((int)camera.position.y  % 16)]
+				[((int)camera.position.z  % 16)]), 3, 60, 20, WHITE);
+
+		DrawText(TextFormat("Chunk [x: %d, y: %d, z: %d]", 
+			(int)camera.position.x / 16, 
+			(int)camera.position.y / 16,
+			(int)camera.position.z /16), 3, 80, 20, WHITE);
 
 		EndDrawing();
 	}
