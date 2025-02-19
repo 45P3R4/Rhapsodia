@@ -7,9 +7,7 @@ Chunk chunks[CHUNKS_COUNT_X][CHUNKS_COUNT_Y][CHUNKS_COUNT_Z];
 	
 void worldInit()
 {
-    int totalChunks = CHUNKS_COUNT_X * CHUNKS_COUNT_Y * CHUNKS_COUNT_Z;
-
-    for (int i = 0; i < totalChunks; i++) 
+    for (int i = 0; i < CHUNKS_COUNT; i++) 
     {
         int x = i / (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z);  // вычисляем индекс по оси X
         int y = (i % (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z)) / CHUNKS_COUNT_Z;  // вычисляем индекс по оси Y
@@ -17,6 +15,15 @@ void worldInit()
 
         chunks[x][y][z].position = (Vector3){x*CHUNK_SIZE, y*CHUNK_SIZE, z*CHUNK_SIZE};
         fillChunkPerlin(&(chunks[x][y][z]), STONE);
+    }
+    for (int i = 0; i < CHUNKS_COUNT; i++) 
+    {
+        int x = i / (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z);  // вычисляем индекс по оси X
+        int y = (i % (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z)) / CHUNKS_COUNT_Z;  // вычисляем индекс по оси Y
+        int z = i % CHUNKS_COUNT_Z;  // вычисляем индекс по оси Z
+
+        // chunks[x][y][z].position = (Vector3){x*CHUNK_SIZE, y*CHUNK_SIZE, z*CHUNK_SIZE};
+        // fillChunkPerlin(&(chunks[x][y][z]), STONE);
         
         chunks[x][y][z].mesh = genMeshChunk((Vector3i){x, y, z});
         chunks[x][y][z].model = LoadModelFromMesh(chunks[x][y][z].mesh);
@@ -26,9 +33,7 @@ void worldInit()
 
 void drawChunks()
 {
-    int totalChunks = CHUNKS_COUNT_X * CHUNKS_COUNT_Y * CHUNKS_COUNT_Z;
-    
-    for (int i = 0; i < totalChunks; i++) 
+    for (int i = 0; i < CHUNKS_COUNT; i++) 
     {
         int x = i / (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z);  // вычисляем индекс по оси X
         int y = (i % (CHUNKS_COUNT_Y * CHUNKS_COUNT_Z)) / CHUNKS_COUNT_Z;  // вычисляем индекс по оси Y
