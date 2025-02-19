@@ -1,4 +1,4 @@
-#include <mem.h>
+#include <string.h>
 #include "chunk.h"
 #include "world.h"
 
@@ -53,15 +53,13 @@ Mesh genMeshChunk(Vector3i chunkIndex)
 
     int index = 0;
 
+    Chunk currentChunk = getChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z);
+
     for (int i = 0; i < pow(CHUNK_SIZE, 3); i++)
     {
         int x = i % CHUNK_SIZE;
         int y = (i / CHUNK_SIZE) % CHUNK_SIZE;
         int z = i / (CHUNK_SIZE * CHUNK_SIZE);
-
-        Vector3 blockPosition = (Vector3){(float)x, (float)y, (float)z};
-
-        Chunk currentChunk = getChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z);
 
         bool blockIsNotAir = currentChunk.blocks[x][y][z] != AIR;
 
@@ -82,31 +80,24 @@ Mesh genMeshChunk(Vector3i chunkIndex)
 
         if (lastBlockX)
         {
-                rightIsAir = true;
+            rightIsAir = true;
         }
 
         if (lastBlockY)
-        {
-            if (chunkIndex.y < CHUNK_SIZE-1)
-                topIsAir = getChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z).blocks[x][0][z] == AIR;
-            else
-                topIsAir = true;
-        }
+            topIsAir = true;
 
         if (lastBlockZ)
-        {
-                frontIsAir = true;
-        }
+            frontIsAir = true;
 
 
         if (firstBlockX)
-            leftIsAir = false;
+            leftIsAir = true;
 
         if (firstBlockY)
-            bottomIsAir = false;
+            bottomIsAir = true;
 
         if (firstBlockZ)
-            backIsAir = false;
+            backIsAir = true;
 
         bool isDrawingSide[6] = {
             (blockIsNotAir && rightIsAir), //right
@@ -115,6 +106,8 @@ Mesh genMeshChunk(Vector3i chunkIndex)
             (blockIsNotAir && bottomIsAir), //bottom
             (blockIsNotAir && frontIsAir), //front
             (blockIsNotAir && backIsAir)}; //back
+
+        Vector3 blockPosition = (Vector3){(float)x, (float)y, (float)z};
 
         for (int k = 0; k < 6; k++)
             if (isDrawingSide[k])
