@@ -79,27 +79,54 @@ Mesh genMeshChunk(Vector3i chunkIndex)
         bool firstBlockZ = (z <= 0);
 
         if (lastBlockX)
-            rightIsAir = false;
+        {
+            if (chunkIndex.x >= CHUNK_SIZE-1)
+                rightIsAir = false;
+            else
+                rightIsAir = getChunk(chunkIndex.x+1, chunkIndex.y, chunkIndex.z).blocks[0][y][z] == AIR;
+        }
 
         if (lastBlockY)
-            // if (chunkIndex.y >= CHUNK_SIZE-1)
+        {
+            if (chunkIndex.y >= CHUNK_SIZE-1)
                 topIsAir = false;
-            // else
-                // topIsAir = getChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z).blocks[x][0][z] == AIR;
+            else
+                topIsAir = getChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z).blocks[x][0][z] == AIR;
+        }
             
 
         if (lastBlockZ)
-            frontIsAir = false;
+        {
+            if (chunkIndex.z >= CHUNK_SIZE-1)
+                frontIsAir = false;
+            else
+                frontIsAir = getChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z+1).blocks[x][y][0] == AIR;
+        }
 
 
         if (firstBlockX)
-            leftIsAir = false;
+        {
+            if (chunkIndex.x <= 0)
+                leftIsAir = false;
+            else
+                leftIsAir = getChunk(chunkIndex.x-1, chunkIndex.y, chunkIndex.z).blocks[CHUNK_SIZE-1][y][z] == AIR;
+        }
 
         if (firstBlockY)
-            bottomIsAir = false;
+        {
+            if (chunkIndex.y <= 0)
+                bottomIsAir = false;
+            else
+            bottomIsAir = getChunk(chunkIndex.x, chunkIndex.y-1, chunkIndex.z).blocks[x][CHUNK_SIZE-1][z] == AIR;
+        }
 
         if (firstBlockZ)
-            backIsAir = false;
+        {
+            if (chunkIndex.z <= 0)
+                backIsAir = false;
+            else
+                backIsAir = getChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z-1).blocks[x][y][CHUNK_SIZE-1] == AIR;
+        }
 
         bool isDrawingSide[6] = {
             (blockIsNotAir && rightIsAir), //right
