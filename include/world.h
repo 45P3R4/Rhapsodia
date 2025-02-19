@@ -7,7 +7,6 @@
 #include "chunk.h"
 
 extern Color skyColor;
-extern Chunk chunks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 
 void worldInit();
 
@@ -18,5 +17,7 @@ void updateChunk(int chunkX, int chunkY, int chunkZ);
 void deleteBlock(Vector3i chunkIndex, Vector3i blockIndex);
 
 void placeBlock(Vector3i chunkIndex, Vector3i blockIndex, int blockType);
+
+Chunk getChunk(int x, int y, int z);
 
 #endif /* WORLD */
