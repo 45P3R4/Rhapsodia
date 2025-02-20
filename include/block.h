@@ -4,6 +4,7 @@
 #include "raylib.h"
 
 #define SIDE_VERTICES_COUNT 12
+#define SIDE_TEXTURE_COORDS 8
 
 enum BlockType
 {

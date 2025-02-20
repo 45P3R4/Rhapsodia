@@ -50,7 +50,7 @@ void addFaceVertices(Vector3 position, int side, float* verts, float* normals, f
             SIDE_VERTICES_COUNT * sizeof(float));
 
         memcpy(
-            texturecoords + offset*8, 
+            texturecoords + offset*SIDE_TEXTURE_COORDS, 
             blockTexcoords[side], 
             32);
     }
