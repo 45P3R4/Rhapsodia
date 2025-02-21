@@ -43,9 +43,9 @@ Mesh genMeshChunk(Vector3i chunkIndex)
     Mesh mesh = {0};
     mesh.vboId = (unsigned int *)RL_CALLOC(MAX_MESH_VBO, sizeof(unsigned int));
 
-    float *vertices = RL_MALLOC(36 * 3 * CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * sizeof(float));
-    float *texcoords = RL_MALLOC(36 * 2 * CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * sizeof(float));
-    float *normals = RL_MALLOC(36 * 3 * CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * sizeof(float));
+    float *vertices = RL_MALLOC(SIDE_VERTICES_COUNT * pow(CHUNK_SIZE, 3) * sizeof(float));
+    float *texcoords = RL_MALLOC(SIDE_TEXTURE_COORDS * pow(CHUNK_SIZE, 3) * sizeof(float));
+    float *normals = RL_MALLOC(SIDE_VERTICES_COUNT * pow(CHUNK_SIZE, 3) * sizeof(float));
 
     int verticesCount = 0;
     int texcoordsCount = 0;
@@ -148,7 +148,7 @@ Mesh genMeshChunk(Vector3i chunkIndex)
 
     verticesCount = index * SIDE_VERTICES_COUNT;
     normalsCount = index * SIDE_VERTICES_COUNT;
-    texcoordsCount = index * 8;
+    texcoordsCount = index * SIDE_TEXTURE_COORDS;
 
     mesh.vertices = (float *)RL_MALLOC(verticesCount * sizeof(float));
     memcpy(mesh.vertices, vertices, verticesCount * sizeof(float));

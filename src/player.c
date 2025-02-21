@@ -29,9 +29,70 @@ void playerUpdate(Camera3D camera)
 
     Chunk currentChunk = getChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z);
 
-    collision = GetRayCollisionMesh(ray, 
-        currentChunk.mesh,
-        MatrixTranslate(currentChunk.position.x, currentChunk.position.y, currentChunk.position.z));
+    
+    int chunkMask[] = {
+        0,  0,  0,
+        1,  0,  0,
+        0,  1,  0,
+        0,  0,  1,
+
+        -1, 0,  0,
+        0, -1,  0,
+        0,  0, -1,
+
+        1,  1,  0,
+        1, -1,  0,
+
+        1,  0,  1,
+        1,  0, -1,
+
+        1,  1,  1,
+        1,  1, -1,
+        1, -1, -1,
+       -1, -1, -1,
+    
+        0,  1,  1,
+        0, -1,  1,
+        0,  1, -1 };
+
+    for (int i = 0; i < 18; i ++)
+    {
+        int x = chunkMask[i*3];
+        int y = chunkMask[i*3+1];
+        int z = chunkMask[i*3+2];
+
+        if (x > 0 && chunkIndex.x == CHUNK_SIZE-1)
+            x = 0;
+        if (y > 0 && chunkIndex.y == CHUNK_SIZE-1)
+            y = 0;
+        if (z > 0 && chunkIndex.z == CHUNK_SIZE-1)
+            z = 0;
+
+        if (x < 0 && chunkIndex.x == 0)
+            x = 0;
+        if (y < 0 && chunkIndex.y == 0)
+            y = 0;
+        if (z < 0 && chunkIndex.z == 0)
+            z = 0;
+
+        currentChunk = getChunk(chunkIndex.x + x, chunkIndex.y + y, chunkIndex.z + z);
+        // printf("%d: [%d %d %d]\n", i, chunkIndex.x + chunkMask[i*3], chunkIndex.y + chunkMask[i*3+1], chunkIndex.z + chunkMask[i*3+2]);
+
+        collision = GetRayCollisionMesh(ray, 
+            currentChunk.mesh,
+            MatrixTranslate(currentChunk.position.x, currentChunk.position.y, currentChunk.position.z));
+
+        if (collision.hit && collision.distance <= INTERACT_DISTANCE)
+        {
+            chunkIndex = (Vector3i) {chunkIndex.x + x, chunkIndex.y + y, chunkIndex.z + z};
+            printf("%d\n", i);
+            break;
+        }
+    }
+
+    // collision = GetRayCollisionMesh(ray, 
+    //     currentChunk.mesh,
+    //     MatrixTranslate(currentChunk.position.x, currentChunk.position.y, currentChunk.position.z));
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
