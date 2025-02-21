@@ -85,7 +85,6 @@ void playerUpdate(Camera3D camera)
         if (collision.hit && collision.distance <= INTERACT_DISTANCE)
         {
             chunkIndex = (Vector3i) {chunkIndex.x + x, chunkIndex.y + y, chunkIndex.z + z};
-            printf("%d\n", i);
             break;
         }
     }
