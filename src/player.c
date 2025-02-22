@@ -61,18 +61,18 @@ void playerUpdate(Camera3D camera)
         int y = chunkMask[i*3+1];
         int z = chunkMask[i*3+2];
 
-        if (x > 0 && chunkIndex.x == CHUNK_SIZE-1)
+        if (x > 0 && chunkIndex.x >= CHUNKS_COUNT_X-1)
             x = 0;
-        if (y > 0 && chunkIndex.y == CHUNK_SIZE-1)
+        if (y > 0 && chunkIndex.y >= CHUNKS_COUNT_Y-1)
             y = 0;
-        if (z > 0 && chunkIndex.z == CHUNK_SIZE-1)
+        if (z > 0 && chunkIndex.z >= CHUNKS_COUNT_Z-1)
             z = 0;
 
-        if (x < 0 && chunkIndex.x == 0)
+        if (x < 0 && chunkIndex.x <= 0)
             x = 0;
-        if (y < 0 && chunkIndex.y == 0)
+        if (y < 0 && chunkIndex.y <= 0)
             y = 0;
-        if (z < 0 && chunkIndex.z == 0)
+        if (z < 0 && chunkIndex.z <= 0)
             z = 0;
 
         currentChunk = getChunk(chunkIndex.x + x, chunkIndex.y + y, chunkIndex.z + z);
