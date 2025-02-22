@@ -80,6 +80,20 @@ void playerUpdate(Camera3D camera)
             (int)(collision.point.z - (collision.normal.z * 0.5)) % CHUNK_SIZE };
 
         deleteBlock(chunkIndex, breakPos);
+
+        if (breakPos.x >= CHUNK_SIZE-1)
+            updateChunk(chunkIndex.x+1, chunkIndex.y, chunkIndex.z);
+        if (breakPos.y >= CHUNK_SIZE-1)
+            updateChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z);
+        if (breakPos.z >= CHUNK_SIZE-1)
+            updateChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z+1);
+
+        if (breakPos.x <= 0)
+            updateChunk(chunkIndex.x-1, chunkIndex.y, chunkIndex.z);
+        if (breakPos.y <= 0)
+            updateChunk(chunkIndex.x, chunkIndex.y-1, chunkIndex.z);
+        if (breakPos.z <= 0)
+            updateChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z-1);
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
@@ -90,6 +104,20 @@ void playerUpdate(Camera3D camera)
             (int)(collision.point.z + (collision.normal.z * 0.5)) % CHUNK_SIZE };
 
         placeBlock(chunkIndex, placePos, STONE);
+
+        if (placePos.x >= CHUNK_SIZE-1 && chunkIndex.x < CHUNKS_COUNT_X -1)
+            updateChunk(chunkIndex.x+1, chunkIndex.y, chunkIndex.z);
+        if (placePos.y >= CHUNK_SIZE-1 && chunkIndex.y < CHUNKS_COUNT_Y -1)
+            updateChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z);
+        if (placePos.z >= CHUNK_SIZE-1 && chunkIndex.z < CHUNKS_COUNT_Z -1)
+            updateChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z+1);
+
+        if (placePos.x <= 0 && chunkIndex.x > 0)
+            updateChunk(chunkIndex.x-1, chunkIndex.y, chunkIndex.z);
+        if (placePos.y <= 0 && chunkIndex.y > 0)
+            updateChunk(chunkIndex.x, chunkIndex.y-1, chunkIndex.z);
+        if (placePos.z <= 0 && chunkIndex.z > 0)
+            updateChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z-1);
     }
 
     playerDrawBlockMarker(collision);
