@@ -6,6 +6,24 @@ Ray ray = { 0 };
 RayCollision collision = { 0 };
 Vector3i chunkIndex = { 0 };  
 
+
+void updateNearbyChunks(Vector3i chIndex, Vector3i blockPosition)
+{
+    if (blockPosition.x >= CHUNK_SIZE-1 && chIndex.x < CHUNKS_COUNT_X -1)
+            updateChunk(chIndex.x+1, chIndex.y, chIndex.z);
+        if (blockPosition.y >= CHUNK_SIZE-1 && chIndex.y < CHUNKS_COUNT_Y -1)
+            updateChunk(chIndex.x, chIndex.y+1, chIndex.z);
+        if (blockPosition.z >= CHUNK_SIZE-1 && chIndex.z < CHUNKS_COUNT_Z -1)
+            updateChunk(chIndex.x, chIndex.y, chIndex.z+1);
+
+        if (blockPosition.x <= 0 && chIndex.x > 0)
+            updateChunk(chIndex.x-1, chIndex.y, chIndex.z);
+        if (blockPosition.y <= 0 && chIndex.y > 0)
+            updateChunk(chIndex.x, chIndex.y-1, chIndex.z);
+        if (blockPosition.z <= 0 && chIndex.z > 0)
+            updateChunk(chIndex.x, chIndex.y, chIndex.z-1);
+}
+
 void playerDrawBlockMarker(RayCollision col)
 {
     Vector3 markerPos = {
@@ -18,18 +36,9 @@ void playerDrawBlockMarker(RayCollision col)
     DrawLine3D(col.point, Vector3Add(col.point, col.normal), RED);
 }
 
-void playerUpdate(Camera3D camera)
+RayCollision getBlockCollision(Chunk chunkCurrent)
 {
-    ray = GetScreenToWorldRay((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, camera);
-
-    chunkIndex = (Vector3i){
-        camera.position.x / CHUNK_SIZE,
-        camera.position.y / CHUNK_SIZE,
-        camera.position.z / CHUNK_SIZE };
-
-    Chunk currentChunk;
-
-    
+    RayCollision col;
     const int chunkMask[18][3] = {
         { 0,  0,  0 }, { 1,  0,  0 }, { 0,  1,  0 }, { 0,  0,  1 },
         {-1,  0,  0 }, { 0, -1,  0 }, { 0,  0, -1 }, { 1,  1,  0 },
@@ -59,18 +68,37 @@ void playerUpdate(Camera3D camera)
         if (blockZ  < 0 && chunkIndex.z <= 0)
             blockZ  = 0;
 
-        currentChunk = getChunk(chunkIndex.x + blockX, chunkIndex.y + blockY, chunkIndex.z + blockZ);
+            chunkCurrent = getChunk(chunkIndex.x + blockX, chunkIndex.y + blockY, chunkIndex.z + blockZ);
 
-        collision = GetRayCollisionMesh(ray, 
-            currentChunk.mesh,
-            MatrixTranslate(currentChunk.position.x, currentChunk.position.y, currentChunk.position.z));
+        col = GetRayCollisionMesh(ray, 
+            chunkCurrent.mesh,
+            MatrixTranslate(chunkCurrent.position.x, chunkCurrent.position.y, chunkCurrent.position.z));
 
-        if (collision.hit && collision.distance <= INTERACT_DISTANCE)
+        if (col.hit && col.distance <= INTERACT_DISTANCE)
         {
             chunkIndex = (Vector3i) {chunkIndex.x + blockX, chunkIndex.y + blockY, chunkIndex.z + blockZ};
             break;
         }
     }
+    return col;
+}
+
+
+void playerUpdate(Camera3D camera)
+{
+    ray = GetScreenToWorldRay((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, camera);
+
+    chunkIndex = (Vector3i){
+        camera.position.x / CHUNK_SIZE,
+        camera.position.y / CHUNK_SIZE,
+        camera.position.z / CHUNK_SIZE };
+
+    Chunk currentChunk;
+
+    collision = getBlockCollision(currentChunk);
+
+    playerDrawBlockMarker(collision);
+    
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
@@ -81,19 +109,7 @@ void playerUpdate(Camera3D camera)
 
         deleteBlock(chunkIndex, breakPos);
 
-        if (breakPos.x >= CHUNK_SIZE-1)
-            updateChunk(chunkIndex.x+1, chunkIndex.y, chunkIndex.z);
-        if (breakPos.y >= CHUNK_SIZE-1)
-            updateChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z);
-        if (breakPos.z >= CHUNK_SIZE-1)
-            updateChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z+1);
-
-        if (breakPos.x <= 0)
-            updateChunk(chunkIndex.x-1, chunkIndex.y, chunkIndex.z);
-        if (breakPos.y <= 0)
-            updateChunk(chunkIndex.x, chunkIndex.y-1, chunkIndex.z);
-        if (breakPos.z <= 0)
-            updateChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z-1);
+        updateNearbyChunks(chunkIndex, breakPos);
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT))
@@ -105,20 +121,6 @@ void playerUpdate(Camera3D camera)
 
         placeBlock(chunkIndex, placePos, STONE);
 
-        if (placePos.x >= CHUNK_SIZE-1 && chunkIndex.x < CHUNKS_COUNT_X -1)
-            updateChunk(chunkIndex.x+1, chunkIndex.y, chunkIndex.z);
-        if (placePos.y >= CHUNK_SIZE-1 && chunkIndex.y < CHUNKS_COUNT_Y -1)
-            updateChunk(chunkIndex.x, chunkIndex.y+1, chunkIndex.z);
-        if (placePos.z >= CHUNK_SIZE-1 && chunkIndex.z < CHUNKS_COUNT_Z -1)
-            updateChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z+1);
-
-        if (placePos.x <= 0 && chunkIndex.x > 0)
-            updateChunk(chunkIndex.x-1, chunkIndex.y, chunkIndex.z);
-        if (placePos.y <= 0 && chunkIndex.y > 0)
-            updateChunk(chunkIndex.x, chunkIndex.y-1, chunkIndex.z);
-        if (placePos.z <= 0 && chunkIndex.z > 0)
-            updateChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z-1);
+        updateNearbyChunks(chunkIndex, placePos);
     }
-
-    playerDrawBlockMarker(collision);
 }
