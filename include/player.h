@@ -16,6 +16,4 @@ typedef struct
 
 void playerUpdate(Camera3D camera);
 
-void playerDrawBlockMarker();
-
 #endif /* PLAYER */
