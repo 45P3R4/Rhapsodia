@@ -27,56 +27,39 @@ void playerUpdate(Camera3D camera)
         camera.position.y / CHUNK_SIZE,
         camera.position.z / CHUNK_SIZE };
 
-    Chunk currentChunk = getChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z);
+    Chunk currentChunk;
 
     
-    int chunkMask[] = {
-        0,  0,  0,
-        1,  0,  0,
-        0,  1,  0,
-        0,  0,  1,
-
-        -1, 0,  0,
-        0, -1,  0,
-        0,  0, -1,
-
-        1,  1,  0,
-        1, -1,  0,
-
-        1,  0,  1,
-        1,  0, -1,
-
-        1,  1,  1,
-        1,  1, -1,
-        1, -1, -1,
-       -1, -1, -1,
-    
-        0,  1,  1,
-        0, -1,  1,
-        0,  1, -1 };
+    const int chunkMask[18][3] = {
+        { 0,  0,  0 }, { 1,  0,  0 }, { 0,  1,  0 }, { 0,  0,  1 },
+        {-1,  0,  0 }, { 0, -1,  0 }, { 0,  0, -1 }, { 1,  1,  0 },
+        { 1, -1,  0 }, { 1,  0,  1 }, { 1,  0, -1 }, { 1,  1,  1 },
+        { 1,  1, -1 }, { 1, -1, -1 }, {-1, -1, -1 }, { 0,  1,  1 },
+        { 0, -1,  1 }, { 0,  1, -1 }
+    };
 
     for (int i = 0; i < 18; i ++)
     {
-        int x = chunkMask[i*3];
-        int y = chunkMask[i*3+1];
-        int z = chunkMask[i*3+2];
+        int blockX = chunkMask[i][0];
+        int blockY = chunkMask[i][1];
+        int blockZ = chunkMask[i][2];
 
-        if (x > 0 && chunkIndex.x == CHUNK_SIZE-1)
-            x = 0;
-        if (y > 0 && chunkIndex.y == CHUNK_SIZE-1)
-            y = 0;
-        if (z > 0 && chunkIndex.z == CHUNK_SIZE-1)
-            z = 0;
+        //is in bounds
+        if (blockX > 0 && chunkIndex.x >= CHUNKS_COUNT_X-1)
+        blockX = 0;
+        if (blockY > 0 && chunkIndex.y >= CHUNKS_COUNT_Y-1)
+            blockY = 0;
+        if (blockZ  > 0 && chunkIndex.z >= CHUNKS_COUNT_Z-1)
+            blockZ  = 0;
 
-        if (x < 0 && chunkIndex.x == 0)
-            x = 0;
-        if (y < 0 && chunkIndex.y == 0)
-            y = 0;
-        if (z < 0 && chunkIndex.z == 0)
-            z = 0;
+        if (blockX < 0 && chunkIndex.x <= 0)
+            blockX = 0;
+        if (blockY < 0 && chunkIndex.y <= 0)
+            blockY = 0;
+        if (blockZ  < 0 && chunkIndex.z <= 0)
+            blockZ  = 0;
 
-        currentChunk = getChunk(chunkIndex.x + x, chunkIndex.y + y, chunkIndex.z + z);
-        // printf("%d: [%d %d %d]\n", i, chunkIndex.x + chunkMask[i*3], chunkIndex.y + chunkMask[i*3+1], chunkIndex.z + chunkMask[i*3+2]);
+        currentChunk = getChunk(chunkIndex.x + blockX, chunkIndex.y + blockY, chunkIndex.z + blockZ);
 
         collision = GetRayCollisionMesh(ray, 
             currentChunk.mesh,
@@ -84,15 +67,10 @@ void playerUpdate(Camera3D camera)
 
         if (collision.hit && collision.distance <= INTERACT_DISTANCE)
         {
-            chunkIndex = (Vector3i) {chunkIndex.x + x, chunkIndex.y + y, chunkIndex.z + z};
-            printf("%d\n", i);
+            chunkIndex = (Vector3i) {chunkIndex.x + blockX, chunkIndex.y + blockY, chunkIndex.z + blockZ};
             break;
         }
     }
-
-    // collision = GetRayCollisionMesh(ray, 
-    //     currentChunk.mesh,
-    //     MatrixTranslate(currentChunk.position.x, currentChunk.position.y, currentChunk.position.z));
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
