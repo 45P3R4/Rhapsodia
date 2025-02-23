@@ -83,15 +83,24 @@ RayCollision getBlockCollision(Chunk chunkCurrent)
     return col;
 }
 
-
-void playerUpdate(Camera3D camera)
+Player initPlayer(Camera3D* camera, Vector3 position)
 {
+    camera->position = position;
+    Player newPlayer;
+    newPlayer.camera = camera;
+    newPlayer.position = position;
+}
+
+void playerUpdate(Player* player, Camera3D camera)
+{
+    player->position = camera.position;
+
     ray = GetScreenToWorldRay((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, camera);
 
     chunkIndex = (Vector3i){
-        camera.position.x / CHUNK_SIZE,
-        camera.position.y / CHUNK_SIZE,
-        camera.position.z / CHUNK_SIZE };
+        player->position.x / CHUNK_SIZE,
+        player->position.y / CHUNK_SIZE,
+        player->position.z / CHUNK_SIZE };
 
     Chunk currentChunk;
 

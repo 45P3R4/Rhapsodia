@@ -10,10 +10,12 @@
 
 typedef struct
 {
+    Camera3D* camera;
     Vector3 position;
-    Vector3 size;
 } Player;
 
-void playerUpdate(Camera3D camera);
+Player initPlayer(Camera3D* camera, Vector3 position);
+
+void playerUpdate(Player* player, Camera3D camera);
 
 #endif /* PLAYER */
