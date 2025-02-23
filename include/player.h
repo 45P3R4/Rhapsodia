@@ -1,12 +1,10 @@
 #ifndef PLAYER
 #define PLAYER
 
-#include "raylib.h"
-#include "raymath.h"
+#include <raylib.h>
+#include <raymath.h>
 #include "settings.h"
-#include "utils.h"
-#include "chunk.h"
-#include "world.h"
+
 
 typedef struct
 {

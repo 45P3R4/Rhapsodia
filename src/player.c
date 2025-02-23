@@ -2,6 +2,8 @@
 #include "player.h"
 #include "playerCamera.h"
 #include "world.h"
+#include "utils.h"
+#include "chunk.h"
 
 Ray ray = { 0 };
 RayCollision collision = { 0 };
