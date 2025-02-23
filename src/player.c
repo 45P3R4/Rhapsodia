@@ -1,5 +1,6 @@
 
 #include "player.h"
+#include "playerCamera.h"
 #include "world.h"
 
 Ray ray = { 0 };
@@ -83,19 +84,40 @@ RayCollision getBlockCollision(Chunk chunkCurrent)
     return col;
 }
 
+Vector3 getPlayerForward(Camera *camera)
+{
+    return Vector3Normalize(Vector3Subtract(camera->target, camera->position));
+}
+
+Vector3 getPlayerUp(Camera *camera)
+{
+    return Vector3Normalize(camera->up);
+}
+
+Vector3 getPlayerRight(Camera *camera)
+{
+    Vector3 forward = getPlayerForward(camera);
+    Vector3 up = getPlayerUp(camera);
+
+    return Vector3Normalize(Vector3CrossProduct(forward, up));
+}
+
+
+
 Player initPlayer(Camera3D* camera, Vector3 position)
 {
     camera->position = position;
     Player newPlayer;
     newPlayer.camera = camera;
     newPlayer.position = position;
+    newPlayer.up = (Vector3) {0,1,0};
 }
 
-void playerUpdate(Player* player, Camera3D camera)
+void playerUpdate(Player* player, Camera3D* camera)
 {
-    player->position = camera.position;
+    player->position = camera->position;
 
-    ray = GetScreenToWorldRay((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, camera);
+    ray = GetScreenToWorldRay((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, *camera);
 
     chunkIndex = (Vector3i){
         player->position.x / CHUNK_SIZE,
@@ -107,6 +129,7 @@ void playerUpdate(Player* player, Camera3D camera)
     collision = getBlockCollision(currentChunk);
 
     playerDrawBlockMarker(collision);
+    updateLook(camera);
     
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))

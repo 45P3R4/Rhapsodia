@@ -45,7 +45,8 @@ int main()
 	Mesh testCubeMesh = GenMeshCube(0.1, 0.1, 0.1);
 	Model testCubeModel = LoadModelFromMesh(testCubeMesh);
 
-	Player player = initPlayer(&camera, (Vector3){30, 20, 20});
+	Player player;
+	// player = initPlayer(&camera, (Vector3){30, 20, 20});
 
 	DisableCursor();
 	SetTargetFPS(144);
@@ -55,13 +56,13 @@ int main()
 	// game loop
 	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
 	{
-		UpdateCamera(&camera, CAMERA_FIRST_PERSON);
+		// UpdateCamera(&camera, CAMERA_FIRST_PERSON);
 
 		BeginDrawing();
 		ClearBackground(skyColor);
 		BeginMode3D(camera);
 
-		playerUpdate(&player, camera);
+		playerUpdate(&player, &camera);
 
 		DrawGrid(10, 1);
 		DrawCube((Vector3){2, 0, 0}, 2, 0.1, 0.1, RED);

@@ -14,4 +14,6 @@
 
 #define INTERACT_DISTANCE 5
 
+#define MOUSE_SENSITIVITY 0.003f
+
 #endif /* SETTINGS */
