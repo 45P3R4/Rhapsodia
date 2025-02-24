@@ -1,6 +1,8 @@
 #ifndef SETTINGS
 #define SETTINGS
 
+#define RESOURCE_PATH "X:/C/Rhapsodia/resources/"
+
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720
 

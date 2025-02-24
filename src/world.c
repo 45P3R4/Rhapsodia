@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "world.h"
 
 Color skyColor = (Color){135, 206, 235, 255};
@@ -27,7 +28,7 @@ void worldInit()
         
         chunks[x][y][z].mesh = genMeshChunk((Vector3i){x, y, z});
         chunks[x][y][z].model = LoadModelFromMesh(chunks[x][y][z].mesh);
-        chunks[x][y][z].model.materials[0].maps->texture = LoadTexture("resources/test.png");
+        chunks[x][y][z].model.materials[0].maps->texture = LoadTexture(RESOURCE_PATH"test.png");
     }
 }
 
@@ -47,11 +48,10 @@ void updateChunk(int chunkX, int chunkY,  int chunkZ)
 {
     // UnloadMesh(chunks[chunkX][chunkY][chunkZ].mesh);
     UnloadModel(chunks[chunkX][chunkY][chunkZ].model);
-    UnloadTexture(chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture);
 
     chunks[chunkX][chunkY][chunkZ].mesh = genMeshChunk((Vector3i){chunkX, chunkY, chunkZ});
     chunks[chunkX][chunkY][chunkZ].model = LoadModelFromMesh(chunks[chunkX][chunkY][chunkZ].mesh);
-    chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture = LoadTexture("resources/test.png");
+    chunks[chunkX][chunkY][chunkZ].model.materials[0].maps->texture = LoadTexture(RESOURCE_PATH"test.png");
 }
 
 void deleteBlock(Vector3i chunkIndex, Vector3i blockIndex)

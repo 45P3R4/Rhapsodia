@@ -7,9 +7,11 @@
 #include "chunk.h"
 
 Ray ray = { 0 };
+Ray floorRay = { 0 };
 RayCollision collision = { 0 };
-Vector3i chunkIndex = { 0 };  
-
+Vector3i chunkIndex = (Vector3i) {0, 0, 0};
+Vector3i blockIndex = (Vector3i) {0, 0, 0};
+Chunk currentChunk = { 0 };
 
 void updateNearbyChunks(Vector3i chIndex, Vector3i blockPosition)
 {
@@ -72,8 +74,6 @@ RayCollision getBlockCollision(Chunk chunkCurrent)
         if (blockZ  < 0 && chunkIndex.z <= 0)
             blockZ  = 0;
 
-            chunkCurrent = getChunk(chunkIndex.x + blockX, chunkIndex.y + blockY, chunkIndex.z + blockZ);
-
         col = GetRayCollisionMesh(ray, 
             chunkCurrent.mesh,
             MatrixTranslate(chunkCurrent.position.x, chunkCurrent.position.y, chunkCurrent.position.z));
@@ -87,17 +87,17 @@ RayCollision getBlockCollision(Chunk chunkCurrent)
     return col;
 }
 
-Vector3 getPlayerForward(Camera *camera)
+Vector3 getPlayerForward(Camera* camera)
 {
     return Vector3Normalize(Vector3Subtract(camera->target, camera->position));
 }
 
-Vector3 getPlayerUp(Camera *camera)
+Vector3 getPlayerUp(Camera* camera)
 {
     return Vector3Normalize(camera->up);
 }
 
-Vector3 getPlayerRight(Camera *camera)
+Vector3 getPlayerRight(Camera* camera)
 {
     Vector3 forward = getPlayerForward(camera);
     Vector3 up = getPlayerUp(camera);
@@ -109,24 +109,37 @@ Player initPlayer(Camera3D* camera, Vector3 position)
 {
     camera->position = position;
     Player newPlayer;
+    newPlayer.size = (Vector3){0.8f, 0.8f, 1.8f};
     newPlayer.camera = camera;
     newPlayer.position = position;
-    newPlayer.up = (Vector3) {0,1,0};
+    newPlayer.up = (Vector3) {0.0f, 1.0f, 0.0f};
+}
+
+bool isOnFloor(Player* player)
+{
+    int block = currentChunk.blocks[blockIndex.x][blockIndex.y-2][blockIndex.z];
+
+    bool isOnFloor = (block != AIR);
+
+    return isOnFloor;
 }
 
 void playerUpdate(Player* player, Camera3D* camera)
 {
-    // player->position = camera->position;
-    // camera->position = player->position;
-
     ray = GetScreenToWorldRay((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, *camera);
 
-    chunkIndex = (Vector3i){
-        player->position.x / CHUNK_SIZE,
-        player->position.y / CHUNK_SIZE,
-        player->position.z / CHUNK_SIZE };
+    chunkIndex = (Vector3i) {
+        (int)player->position.x / CHUNK_SIZE,
+        (int)player->position.y / CHUNK_SIZE,
+        (int)player->position.z / CHUNK_SIZE };
 
-    Chunk currentChunk;
+    blockIndex = (Vector3i) {
+        (int)player->position.x % CHUNK_SIZE,
+        (int)player->position.y % CHUNK_SIZE,
+        (int)player->position.z % CHUNK_SIZE };
+
+    currentChunk = getChunk(chunkIndex.x, chunkIndex.y, chunkIndex.z);
+    
 
     collision = getBlockCollision(currentChunk);
 

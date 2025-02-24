@@ -46,12 +46,7 @@ int main()
 	Model testCubeModel = LoadModelFromMesh(testCubeMesh);
 
 	Player player;
-	player = initPlayer(&camera, (Vector3){30, 20, 20});
-
-	Player* ptr = &player;
-
-	printf("\n\n%x\n", ptr);
-	// printf("%x\n\n", ptr->camera);
+	player = initPlayer(&camera, (Vector3){30, 30, 20});
 
 	DisableCursor();
 	SetTargetFPS(144);
@@ -61,8 +56,6 @@ int main()
 	// game loop
 	while (!WindowShouldClose())
 	{
-		// UpdateCamera(&camera, CAMERA_FIRST_PERSON);
-
 		BeginDrawing();
 		ClearBackground(skyColor);
 		BeginMode3D(camera);
