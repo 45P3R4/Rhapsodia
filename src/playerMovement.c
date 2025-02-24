@@ -14,8 +14,6 @@ int jumpindex = 5;
 
 void updatePlayerMovement(Player* player, Camera* camera)
 {
-    player->position = camera->position;
-
     velocity = (Vector3) {0,0,0};
     Vector3 forward = getPlayerForward(camera);
     Vector3 right = getPlayerRight(camera);
@@ -48,11 +46,9 @@ void updatePlayerMovement(Player* player, Camera* camera)
         jumpindex--;
     }
 
-    printf("%f\n", verticalVelocity);
-
     velocity = Vector3Add(velocity, (Vector3){0, verticalVelocity, 0});
 
-    // player->position = Vector3Add(player->position, velocity);
     camera->position = Vector3Add(camera->position, velocity);
+    player->position = camera->position;
     camera->target = Vector3Add(camera->target, velocity);
 }
