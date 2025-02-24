@@ -5,10 +5,12 @@
 #include <stdio.h>
 
 const float moveSpeed = 0.03;
-const float jumpPower = 5.0;
+const float jumpPower = 50.0;
 const float gravity = 0.001f;
 float verticalVelocity = 0;
 Vector3 velocity = (Vector3) {0,0,0};
+
+int jumpindex = 5;
 
 void updatePlayerMovement(Player* player, Camera* camera)
 {
@@ -35,12 +37,16 @@ void updatePlayerMovement(Player* player, Camera* camera)
         verticalVelocity = 0;
 
         if(IsKeyPressed(KEY_SPACE))
-        {
-            verticalVelocity = jumpPower;
-        }
+            jumpindex = 10;
     }
     else
         verticalVelocity -= gravity;
+
+    if (jumpindex > 0)
+    {
+        verticalVelocity = gravity * jumpPower/jumpindex;
+        jumpindex--;
+    }
 
     printf("%f\n", verticalVelocity);
 
