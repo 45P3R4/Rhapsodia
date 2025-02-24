@@ -46,7 +46,12 @@ int main()
 	Model testCubeModel = LoadModelFromMesh(testCubeMesh);
 
 	Player player;
-	// player = initPlayer(&camera, (Vector3){30, 20, 20});
+	player = initPlayer(&camera, (Vector3){30, 20, 20});
+
+	Player* ptr = &player;
+
+	printf("\n\n%x\n", ptr);
+	// printf("%x\n\n", ptr->camera);
 
 	DisableCursor();
 	SetTargetFPS(144);
@@ -54,7 +59,7 @@ int main()
 	worldInit();
 
 	// game loop
-	while (!WindowShouldClose()) // run the loop untill the user presses ESCAPE or presses the Close button on the window
+	while (!WindowShouldClose())
 	{
 		// UpdateCamera(&camera, CAMERA_FIRST_PERSON);
 

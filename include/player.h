@@ -5,7 +5,6 @@
 #include <raymath.h>
 #include "settings.h"
 
-
 typedef struct
 {
     Camera3D* camera;

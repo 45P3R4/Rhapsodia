@@ -1,6 +1,7 @@
 
 #include "player.h"
 #include "playerCamera.h"
+#include "playerMovement.h"
 #include "world.h"
 #include "utils.h"
 #include "chunk.h"
@@ -104,8 +105,6 @@ Vector3 getPlayerRight(Camera *camera)
     return Vector3Normalize(Vector3CrossProduct(forward, up));
 }
 
-
-
 Player initPlayer(Camera3D* camera, Vector3 position)
 {
     camera->position = position;
@@ -117,7 +116,8 @@ Player initPlayer(Camera3D* camera, Vector3 position)
 
 void playerUpdate(Player* player, Camera3D* camera)
 {
-    player->position = camera->position;
+    // player->position = camera->position;
+    // camera->position = player->position;
 
     ray = GetScreenToWorldRay((Vector2){GetScreenWidth()/2, GetScreenHeight()/2}, *camera);
 
@@ -132,8 +132,8 @@ void playerUpdate(Player* player, Camera3D* camera)
 
     playerDrawBlockMarker(collision);
     updateLook(camera);
+    updatePlayerMovement(player, camera);
     
-
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
     {
         Vector3i breakPos = {
@@ -142,7 +142,6 @@ void playerUpdate(Player* player, Camera3D* camera)
             (int)(collision.point.z - (collision.normal.z * 0.5)) % CHUNK_SIZE };
 
         deleteBlock(chunkIndex, breakPos);
-
         updateNearbyChunks(chunkIndex, breakPos);
     }
 
@@ -154,7 +153,6 @@ void playerUpdate(Player* player, Camera3D* camera)
             (int)(collision.point.z + (collision.normal.z * 0.5)) % CHUNK_SIZE };
 
         placeBlock(chunkIndex, placePos, STONE);
-
         updateNearbyChunks(chunkIndex, placePos);
     }
 }
